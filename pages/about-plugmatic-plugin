@@ -1,0 +1,37 @@
+{
+  "title": "About Plugmatic Plugin",
+  "story": [
+  {
+    "type": "paragraph",
+    "id": "2f538303a2750c3b",
+    "text": "Here we describe the purpose of the plugin and include a sample."
+  },
+  {
+    "type": "plugmatic",
+    "id": "aa516c1dac55e70b",
+    "text": "This is text in the new plugin. You can *double-click* to edit it too."
+  }
+],
+  "journal": [
+  {
+    "type": "create",
+    "item": {
+      "title": "About Plugmatic Plugin",
+      "story": [
+  {
+    "type": "paragraph",
+    "id": "2f538303a2750c3b",
+    "text": "Here we describe the purpose of the plugin and include a sample."
+  },
+  {
+    "type": "plugmatic",
+    "id": "aa516c1dac55e70b",
+    "text": "This is text in the new plugin. You can *double-click* to edit it too."
+  }
+]
+    },
+    "date": 1480285838000,
+    "certificate": "from mkplugin.sh"
+  }
+]
+}
