@@ -4,12 +4,12 @@
   {
     "type": "paragraph",
     "id": "2f538303a2750c3b",
-    "text": "Here we describe the purpose of the plugin and include a sample."
+    "text": "This plugin queries the origin server for information about installed plugins. Eventually server administrators will install new and updated plugins here."
   },
   {
     "type": "plugmatic",
     "id": "aa516c1dac55e70b",
-    "text": "This is text in the new plugin. You can *double-click* to edit it too."
+    "text": "NAME\nFACTORY\nPAGES\nVERSION\nMONTHS"
   }
 ],
   "journal": [
@@ -21,12 +21,12 @@
   {
     "type": "paragraph",
     "id": "2f538303a2750c3b",
-    "text": "Here we describe the purpose of the plugin and include a sample."
+    "text": "This plugin queries the origin server for information about installed plugins. Eventually server administrators will install new and updated plugins here."
   },
   {
     "type": "plugmatic",
     "id": "aa516c1dac55e70b",
-    "text": "This is text in the new plugin. You can *double-click* to edit it too."
+    "text": "NAME\nFACTORY\nPAGES\nVERSION\nMONTHS"
   }
 ]
     },
