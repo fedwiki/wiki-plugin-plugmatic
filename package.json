@@ -1,6 +1,6 @@
 {
   "name": "wiki-plugin-plugmatic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Federated Wiki - Plugmatic Plugin",
   "keywords": [
     "plugmatic",
@@ -9,9 +9,9 @@
     "plugin"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "you@example.com",
-    "url": "http://example.com"
+    "name": "Ward Cunningham",
+    "email": "ward@c2.com",
+    "url": "http://ward.asia.wiki.org"
   },
   "contributors": [],
   "scripts": {
@@ -29,12 +29,17 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fedwiki/wiki-plugin-plugmatic.git"
+    "url": "https://github.com/wardcunningham/wiki-plugin-plugmatic.git"
   },
   "bugs": {
-    "url": "https://github.com/fedwiki/wiki-plugin-plugmatic/issues"
+    "url": "https://github.com/wardcunningham/wiki-plugin-plugmatic/issues"
   },
   "engines": {
     "node": ">=0.10"
+  },
+  "dependencies": {
+    "async": "^2.1.4",
+    "glob": "^7.1.1",
+    "jsonfile": "^2.4.0"
   }
 }
