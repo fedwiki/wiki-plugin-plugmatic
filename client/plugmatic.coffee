@@ -37,7 +37,7 @@ emit = ($item, item) ->
       $parent = $(e.target).parent()
       name = $parent.find('td:first').text().replace(/[^\w]/g,'')
       row = data.results.find (obj) -> obj.plugin == name
-      text = (obj) -> (expand obj).replace(/\n/g,'<br>')
+      text = (obj) -> return '' unless obj; (expand obj).replace(/\n/g,'<br>')
       struct = (obj) -> return '' unless obj; "<pre>#{expand JSON.stringify obj, null, '  '}</pre>"
       abouts = (obj) -> "<p><b><a href=#>#{obj.title}</a></b><br>#{obj.synopsis}</p>"
       birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
