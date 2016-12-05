@@ -5,15 +5,39 @@ fs = require 'fs'
 glob = require 'glob'
 async = require 'async'
 jsonfile = require 'jsonfile'
+https = require 'https'
+exec = require('child_process').exec
+
+
+github = (path, done) ->
+  options =
+    host: 'raw.githubusercontent.com'
+    port: 443
+    method: 'GET'
+    path: path
+  req = https.get options, (res) ->
+    res.setEncoding 'utf8'
+    data = ''
+    res.on 'data', (d) ->
+      data += d
+    res.on 'end', () ->
+      done data
 
 # http://www.sebastianseilund.com/nodejs-async-in-practice
 
 startServer = (params) ->
   app = params.app
   argv = params.argv
+  pub = null
+
+  github '/fedwiki/wiki/master/package.json', (data) ->
+    pub =
+      date: Date.now()
+      data: JSON.parse data
 
   route = (endpoint) -> "/plugin/plugmatic/#{endpoint}"
   path = (file) -> "#{argv.packageDir}/#{file}"
+
 
   info = (file, done) ->
     plugin = file.slice 12    
@@ -71,6 +95,11 @@ startServer = (params) ->
       # res.send(files)
       async.map files||[], info, (err, results) ->
         return res.e err if err
-        res.json {results}
+        res.json {results, pub}
+
+  app.get route('view/:pkg'), (req, res) ->
+    res.setHeader 'Content-Type', 'application/json'
+    exec("npm view wiki-plugin-#{req.params.pkg} --json").stdout.pipe(res)
+
 
 module.exports = {startServer}
