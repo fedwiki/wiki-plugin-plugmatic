@@ -6,23 +6,36 @@ expand = (text)->
     .replace />/g, '&gt;'
     .replace /\*(.+?)\*/g, '<i>$1</i>'
 
-report = (plugins, dependencies) ->
-  console.log 'dependencies', dependencies
-  result = []
-  for plugin, index in plugins
-    months = if plugin.birth 
-      ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
-    else
-      ''
-    result.push """
-      <tr class=row>
-      <td title=authors> #{plugin.plugin}
-      <td title=category> #{plugin.factory?.category || ''}
-      <td title=about> #{plugin.pages?.length || ''}
-      <td title=version> #{plugin.package?._id?.split(/@/)[1] || ''}
-      <td title=current> #{dependencies["wiki-plugin-#{plugin.plugin}"] || ''}
-      <td title="months"> #{months}
-    """
+parse = (text) ->
+  result = {columns: []}
+  lines = text.split /\n+/
+  for line in lines
+    result.columns.push 'name'    if line.match /\bNAME\b/
+    result.columns.push 'factory' if line.match /\bFACTORY\b/
+    result.columns.push 'pages'   if line.match /\bPAGES\b/
+    result.columns.push 'version' if line.match /\bVERSION\b/
+    result.columns.push 'current' if line.match /\bCURRENT\b/
+    result.columns.push 'months'  if line.match /\bMONTHS\b/
+  result
+
+format = (markup, plugin, dependencies) ->
+  months = if plugin.birth
+    ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
+  else
+    ''
+  result = ["<tr class=row>"]
+  for column in markup.columns
+    result.push switch column
+      when 'name' then "<td title=authors> #{plugin.plugin}"
+      when 'factory' then "<td title='factory category'> #{plugin.factory?.category || ''}"
+      when 'pages' then "<td title='about pages'> #{plugin.pages?.length || ''}"
+      when 'version' then "<td title=version> #{plugin.package?._id?.split(/@/)[1] || ''}"
+      when 'current' then "<td title=current> #{dependencies['wiki-plugin-'+plugin.plugin] || ''}"
+      when 'months' then "<td title='months old'> #{months}"
+  result.join "\n"
+
+report = (markup, plugins, dependencies) ->
+  result = (format markup, plugin, dependencies for plugin, index in plugins)
   "<table style=\"width:100%;\">#{result.join "\n"}</table>"
 
 emit = ($item, item) ->
@@ -43,11 +56,11 @@ emit = ($item, item) ->
       birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
       switch column
         when 'authors' then done text row.authors
-        when 'category' then done struct row.factory
-        when 'about' then done row.pages.map(abouts).join('')
+        when 'factory category' then done struct row.factory
+        when 'about pages' then done row.pages.map(abouts).join('')
         when 'version' then done struct row.package
         when 'current' then $.getJSON "/plugin/plugmatic/view/#{name}", (data) -> done struct data
-        when 'months' then done birth row.birth
+        when 'months old' then done birth row.birth
         else done 'unexpected column'
 
     showdetail = (e) ->
@@ -63,7 +76,8 @@ emit = ($item, item) ->
     bright = (e) -> more(e); $(e.currentTarget).css 'background-color', '#f8f8f8'
     normal = (e) -> $(e.currentTarget).css 'background-color', '#eee'
 
-    $item.find('p').html report data.results, data.pub.data.dependencies
+    markup = parse item.text
+    $item.find('p').html report markup, data.results, data.pub.data.dependencies
     $item.find('.row').hover bright, normal
     $item.find('p td').click (e) ->
       column = $(e.target).attr('title')
@@ -82,5 +96,5 @@ bind = ($item, item) ->
   $item.dblclick -> wiki.textEditor $item, item
 
 window.plugins.plugmatic = {emit, bind} if window?
-module.exports = {expand} if module?
+module.exports = {parse} if module?
 
