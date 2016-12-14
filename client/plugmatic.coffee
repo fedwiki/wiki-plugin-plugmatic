@@ -7,8 +7,8 @@ expand = (text)->
     .replace /\*(.+?)\*/g, '<i>$1</i>'
 
 parse = (text) ->
-  result = {columns: []}
-  lines = text.split /\n+/
+  result = {columns: [], plugins: []}
+  lines = (text || '').split /\n+/
   for line in lines
     result.columns.push 'name'    if line.match /\bNAME\b/
     result.columns.push 'factory' if line.match /\bFACTORY\b/
@@ -16,6 +16,7 @@ parse = (text) ->
     result.columns.push 'version' if line.match /\bVERSION\b/
     result.columns.push 'current' if line.match /\bCURRENT\b/
     result.columns.push 'months'  if line.match /\bMONTHS\b/
+    result.plugins.push m[1]      if m = line.match /^wiki-plugin-(\w+)$/
   result
 
 format = (markup, plugin, dependencies) ->
@@ -35,7 +36,15 @@ format = (markup, plugin, dependencies) ->
   result.join "\n"
 
 report = (markup, plugins, dependencies) ->
-  result = (format markup, plugin, dependencies for plugin, index in plugins)
+  retrieve = (name) ->
+    for plugin in plugins
+      return plugin if plugin.plugin == name
+    {plugin: name}
+  inventory = if markup.plugins.length > 0
+    markup.plugins.map retrieve
+  else
+    plugins
+  result = (format markup, plugin, dependencies for plugin, index in inventory)
   "<table style=\"width:100%;\">#{result.join "\n"}</table>"
 
 emit = ($item, item) ->

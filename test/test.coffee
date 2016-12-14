@@ -8,6 +8,14 @@ describe 'plugmatic plugin', ->
 
   describe 'columns', ->
 
+    it 'handles null text', ->
+      result = plugmatic.parse null
+      expect(result.columns).to.eql []
+
+    it 'handles empty text', ->
+      result = plugmatic.parse ''
+      expect(result.columns).to.eql []
+
     it 'ignores invalid input', ->
       result = plugmatic.parse 'mumble'
       expect(result.columns).to.eql []
@@ -36,3 +44,12 @@ describe 'plugmatic plugin', ->
       result = plugmatic.parse 'FACTORY\nCURRENT\nVERSION'
       expect(result.columns).to.eql ['factory', 'current', 'version']
 
+  describe 'inventory', ->
+
+    it 'irecognizes plugins', ->
+      result = plugmatic.parse 'wiki-plugin-method'
+      expect(result.plugins).to.eql ['method']
+
+    it 'irecognizes multiple plugins', ->
+      result = plugmatic.parse 'wiki-plugin-method\nwiki-plugin-mumble'
+      expect(result.plugins).to.eql ['method','mumble']
