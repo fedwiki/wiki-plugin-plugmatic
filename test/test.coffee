@@ -25,24 +25,24 @@ describe 'plugmatic plugin', ->
       expect(result.columns).to.eql ['name']
 
     it 'recognizes status codes', ->
-      result = plugmatic.parse 'FACTORY VERSION CURRENT'
-      expect(result.columns).to.eql ['factory', 'version', 'current']
+      result = plugmatic.parse 'STATUS MENU BUNDLED INSTALLED PUBLISHED'
+      expect(result.columns).to.eql ['status', 'menu', 'bundled', 'installed', 'published']
 
     it 'recognizes counts', ->
-      result = plugmatic.parse 'PAGES\nMONTHS'
-      expect(result.columns).to.eql ['pages', 'months']
+      result = plugmatic.parse "ABOUT\nSERVICE"
+      expect(result.columns).to.eql ['about', 'service']
 
     it 'ignores punctuation', ->
       result = plugmatic.parse '  NAME.'
       expect(result.columns).to.eql ['name']
 
     it 'asserts order witin a line', ->
-      result = plugmatic.parse 'FACTORY CURRENT VERSION'
-      expect(result.columns).to.eql ['factory', 'version', 'current']
+      result = plugmatic.parse 'MENU PUBLISHED INSTALLED'
+      expect(result.columns).to.eql ['menu', 'installed', 'published']
 
     it 'preservesrs order between lines', ->
-      result = plugmatic.parse 'FACTORY\nCURRENT\nVERSION'
-      expect(result.columns).to.eql ['factory', 'current', 'version']
+      result = plugmatic.parse "MENU\nPUBLISHED\nINSTALLED"
+      expect(result.columns).to.eql ['menu', 'published', 'installed']
 
   describe 'inventory', ->
 
@@ -51,5 +51,5 @@ describe 'plugmatic plugin', ->
       expect(result.plugins).to.eql ['method']
 
     it 'irecognizes multiple plugins', ->
-      result = plugmatic.parse 'wiki-plugin-method\nwiki-plugin-mumble'
+      result = plugmatic.parse "wiki-plugin-method\nwiki-plugin-mumble"
       expect(result.plugins).to.eql ['method','mumble']

@@ -1,4 +1,7 @@
 
+any = (array) ->
+  array[Math.floor Math.random()*array.length]
+
 expand = (text)->
   text
     .replace /&/g, '&amp;'
@@ -10,13 +13,15 @@ parse = (text) ->
   result = {columns: [], plugins: []}
   lines = (text || '').split /\n+/
   for line in lines
-    result.columns.push 'name'    if line.match /\bNAME\b/
-    result.columns.push 'factory' if line.match /\bFACTORY\b/
-    result.columns.push 'pages'   if line.match /\bPAGES\b/
-    result.columns.push 'version' if line.match /\bVERSION\b/
-    result.columns.push 'current' if line.match /\bCURRENT\b/
-    result.columns.push 'months'  if line.match /\bMONTHS\b/
-    result.plugins.push m[1]      if m = line.match /^wiki-plugin-(\w+)$/
+    result.columns.push 'status'    if line.match /\STATUS\b/
+    result.columns.push 'name'      if line.match /\bNAME\b/
+    result.columns.push 'menu'      if line.match /\bMENU\b/
+    result.columns.push 'about'     if line.match /\bABOUT\b/
+    result.columns.push 'service'   if line.match /\bSERVICE\b/
+    result.columns.push 'bundled'   if line.match /\bBUNDLED\b/
+    result.columns.push 'installed' if line.match /\bINSTALLED\b/
+    result.columns.push 'published' if line.match /\bPUBLISHED\b/
+    result.plugins.push m[1]        if m = line.match /^wiki-plugin-(\w+)$/
   result
 
 format = (markup, plugin, dependencies) ->
@@ -24,15 +29,17 @@ format = (markup, plugin, dependencies) ->
     ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
   else
     ''
-  result = ["<tr class=row>"]
+  result = ["<tr class=row data-name=#{plugin.plugin}>"]
   for column in markup.columns
     result.push switch column
-      when 'name' then "<td title=authors> #{plugin.plugin}"
-      when 'factory' then "<td title='factory category'> #{plugin.factory?.category || ''}"
-      when 'pages' then "<td title='about pages'> #{plugin.pages?.length || ''}"
-      when 'version' then "<td title=version> #{plugin.package?._id?.split(/@/)[1] || ''}"
-      when 'current' then "<td title=current> #{dependencies['wiki-plugin-'+plugin.plugin] || ''}"
-      when 'months' then "<td title='months old'> #{months}"
+      when 'status'    then "<td title=status><span style='color: #{any ['#ccc','#f77','#ff7','#0fa']}'>●</span>"
+      when 'name'      then "<td title=name> #{plugin.plugin}"
+      when 'menu'      then "<td title=menu> #{plugin.factory?.category || ''}"
+      when 'about'     then "<td title=about> #{plugin.pages?.length || ''}"
+      when 'service'   then "<td title=service> #{months}"
+      when 'bundled'   then "<td title=bundled> #{plugin.package?._id?.split(/@/)[1] || ''}"
+      when 'installed' then "<td title=installed> #{dependencies['wiki-plugin-'+plugin.plugin] || ''}"
+      when 'published' then "<td title=published> #{dependencies['wiki-plugin-'+plugin.plugin] || ''}"
   result.join "\n"
 
 report = (markup, plugins, dependencies) ->
@@ -64,17 +71,19 @@ emit = ($item, item) ->
       abouts = (obj) -> "<p><b><a href=#>#{obj.title}</a></b><br>#{obj.synopsis}</p>"
       birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
       switch column
-        when 'authors' then done text row.authors
-        when 'factory category' then done struct row.factory
-        when 'about pages' then done row.pages.map(abouts).join('')
-        when 'version' then done struct row.package
-        when 'current' then $.getJSON "/plugin/plugmatic/view/#{name}", (data) -> done struct data
-        when 'months old' then done birth row.birth
+        when 'status' then done text row.authors
+        when 'name' then done text row.authors
+        when 'menu' then done struct row.factory
+        when 'about' then done row.pages.map(abouts).join('')
+        when 'service' then done birth row.birth
+        when 'bundled' then done struct row.package
+        when 'installed' then done struct row.package
+        when 'published' then $.getJSON "/plugin/plugmatic/view/#{name}", (data) -> done struct data
         else done 'unexpected column'
 
     showdetail = (e) ->
       $parent = $(e.target).parent()
-      name = $parent.find('td:first').text().replace(/[^\w]/g,'')
+      name = $parent.data('name')
       detail name, (html) ->
         wiki.dialog "#{name} plugin #{column}", html || ''
 
