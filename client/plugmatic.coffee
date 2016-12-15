@@ -2,6 +2,12 @@
 any = (array) ->
   array[Math.floor Math.random()*array.length]
 
+traffic =
+  gray:   '#ccc'
+  red:    '#f77'
+  yellow: '#ff7'
+  green:  '#0f7'
+
 expand = (text)->
   text
     .replace /&/g, '&amp;'
@@ -32,7 +38,7 @@ format = (markup, plugin, dependencies) ->
   result = ["<tr class=row data-name=#{plugin.plugin}>"]
   for column in markup.columns
     result.push switch column
-      when 'status'    then "<td title=status><span style='color: #{any ['#ccc','#f77','#ff7','#0fa']}'>●</span>"
+      when 'status'    then "<td title=status><span style='color: #{traffic.gray}'>●</span>"
       when 'name'      then "<td title=name> #{plugin.plugin}"
       when 'menu'      then "<td title=menu> #{plugin.factory?.category || ''}"
       when 'about'     then "<td title=about> #{plugin.pages?.length || ''}"
