@@ -28,10 +28,10 @@ github = (path, done) ->
 startServer = (params) ->
   app = params.app
   argv = params.argv
-  pub = null
+  bundle = null
 
   github '/fedwiki/wiki/master/package.json', (data) ->
-    pub =
+    bundle =
       date: Date.now()
       data: JSON.parse data
 
@@ -73,6 +73,12 @@ startServer = (params) ->
     async.series [birth,authors,packagejson,factory,pages], (err) ->
       done null, site
 
+  npmjs = (plugin, done) ->
+    pkg = "wiki-plugin-#{plugin}"
+    exec "npm view #{pkg} --json", (err, stdout, stderr) ->
+      try npm = JSON.parse stdout
+      done null, {plugin, pkg, npm}
+
   farm = (req, res, next) ->
     if argv.f
       next()
@@ -90,12 +96,24 @@ startServer = (params) ->
   app.get route('plugins'), (req, res) ->
     glob "wiki-plugin-*", {cwd: argv.packageDir}, (err, files) ->
       return res.e err if err
-      # extract the plugin name from the name of the directory it's installed in
-      # files = files.map (file) -> file.slice(12)
-      # res.send(files)
-      async.map files||[], info, (err, results) ->
+      async.map files||[], info, (err, install) ->
         return res.e err if err
-        res.json {results, pub}
+        res.json {install, bundle}
+
+  app.post route('plugins'), (req, res) ->
+    payload = {bundle}
+
+    installed = (cb) ->
+      files = ("wiki-plugin-#{plugin}" for plugin in req.body.plugins||[])
+      async.map files||[], info, (err, install) ->
+        payload.install = install; cb()
+
+    published = (cb) ->
+      async.map req.body.plugins||[], npmjs, (err, results) ->
+        payload.publish = results; cb()
+    
+    async.parallel [installed, published], (err) ->
+      res.json payload
 
   app.get route('view/:pkg'), (req, res) ->
     res.setHeader 'Content-Type', 'application/json'
