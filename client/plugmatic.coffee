@@ -49,16 +49,30 @@ emit = ($item, item) ->
         ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
       else
         ''
+      status = ->
+        installed = plugin.package?.version
+        published = pub(name).npm?.version
+        if installed? and published?
+          if installed == published
+            traffic.green
+          else
+            traffic.yellow
+        else
+          if published?
+            traffic.red
+          else
+            traffic.gray
+
       result = ["<tr class=row data-name=#{plugin.plugin}>"]
       for column in markup.columns
         result.push switch column
-          when 'status'    then "<td title=status style='color: #{traffic.gray}'>●"
+          when 'status'    then "<td title=status style='color: #{status()}'>●"
           when 'name'      then "<td title=name> #{name}"
           when 'menu'      then "<td title=menu> #{plugin.factory?.category || ''}"
           when 'about'     then "<td title=about> #{plugin.pages?.length || ''}"
           when 'service'   then "<td title=service> #{months}"
           when 'bundled'   then "<td title=bundled> #{dependencies['wiki-plugin-'+name] || ''}"
-          when 'installed' then "<td title=installed> #{plugin.package?._id?.split(/@/)[1] || ''}"
+          when 'installed' then "<td title=installed> #{plugin.package?.version || ''}"
           when 'published' then "<td title=published> #{pub(name).npm?.version || ''}"
       result.join "\n"
 
