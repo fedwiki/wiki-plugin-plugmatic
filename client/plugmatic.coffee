@@ -8,12 +8,29 @@ traffic =
   yellow: '#ff7'
   green:  '#0f7'
 
-expand = (text)->
+escape = (text) ->
   text
     .replace /&/g, '&amp;'
     .replace /</g, '&lt;'
     .replace />/g, '&gt;'
     .replace /\*(.+?)\*/g, '<i>$1</i>'
+
+expand = (string) ->
+  stashed = []
+  stash = (text) ->
+    here = stashed.length
+    stashed.push text
+    "〖#{here}〗"
+  unstash = (match, digits) ->
+    stashed[+digits]
+  external = (match, href, protocol) ->
+    stash """\"<a class="external" target="_blank" href="#{href}" title="#{href}" rel="nofollow">#{escape href}</a>\""""
+  string = string
+    .replace /〖(\d+)〗/g, "〖 $1 〗"
+    .replace /"((http|https|ftp):.*?)"/gi, external
+  escape string
+    .replace /〖(\d+)〗/g, unstash
+
 
 parse = (text) ->
   result = {columns: [], plugins: []}
