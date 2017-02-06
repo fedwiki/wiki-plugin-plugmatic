@@ -6,19 +6,27 @@ expect = require 'expect.js'
 
 describe 'plugmatic plugin', ->
 
+  # we default to less columns when there is lots to do
+  lots = ['name', 'about', 'menu', 'bundled', 'installed']
+  some = ['status', 'name', 'about', 'bundled', 'installed', 'published']
+
   describe 'columns', ->
 
     it 'handles null text', ->
       result = plugmatic.parse null
-      expect(result.columns).to.eql []
+      expect(result.columns).to.eql lots
 
     it 'handles empty text', ->
       result = plugmatic.parse ''
-      expect(result.columns).to.eql []
+      expect(result.columns).to.eql lots
+
+    it 'handles some plugins', ->
+      result = plugmatic.parse 'wiki-plugin-plugmatic'
+      expect(result.columns).to.eql some
 
     it 'ignores invalid input', ->
-      result = plugmatic.parse 'mumble'
-      expect(result.columns).to.eql []
+      result = plugmatic.parse 'MUMBLE MENU'
+      expect(result.columns).to.eql ['menu']
 
     it 'recognizes name', ->
       result = plugmatic.parse 'NAME'
@@ -46,10 +54,10 @@ describe 'plugmatic plugin', ->
 
   describe 'inventory', ->
 
-    it 'irecognizes plugins', ->
+    it 'recognizes plugins', ->
       result = plugmatic.parse 'wiki-plugin-method'
       expect(result.plugins).to.eql ['method']
 
-    it 'irecognizes multiple plugins', ->
+    it 'recognizes multiple plugins', ->
       result = plugmatic.parse "wiki-plugin-method\nwiki-plugin-mumble"
       expect(result.plugins).to.eql ['method','mumble']

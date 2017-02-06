@@ -45,6 +45,11 @@ parse = (text) ->
     result.columns.push 'installed' if line.match /\bINSTALLED\b/
     result.columns.push 'published' if line.match /\bPUBLISHED\b/
     result.plugins.push m[1]        if m = line.match /^wiki-plugin-(\w+)$/
+  if result.columns.length == 0
+    result.columns = if result.plugins.length == 0
+      ['name', 'about', 'menu', 'bundled', 'installed']
+    else
+      ['status', 'name', 'about', 'bundled', 'installed', 'published']
   result
 
 
