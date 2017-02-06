@@ -107,17 +107,18 @@ emit = ($item, item) ->
         markup.plugins.map retrieve
       else
         plugins
-      result = (format markup, plugin, dependencies for plugin, index in inventory)
-      "<table style=\"width:100%;\">#{result.join "\n"}</table>"
+      head = ("<td style='font-size:75%; color:gray;'>#{column}" for column in markup.columns).join "\n"
+      result = (format markup, plugin, dependencies for plugin, index in inventory).join "\n"
+      "<table style=\"width:100%;\"><tr> #{head} #{result}</table>"
 
     install = (row, npm) ->
-      console.log 'npm', npm
       return "<p>can't find this in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
-      window.plugins.plugmatic.install = (version) -> c = $('span.plugmatic'); c.text parseInt(c.text()) + 1
-      button = (version, action) -> "<tr><td><button onclick=window.plugins.plugmatic.#{action}('#{version}')> #{action} </button> <td> #{version}"
-      buttons = (button(version, 'getter') for version in npm.versions)
-      "<table>#{buttons.join "\n"}"
-
+      window.plugins.plugmatic.install = (version) -> console.log 'installing', version, row, npm
+      choice = (version) ->
+        button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
+        "<tr> <td> #{version} <td> #{if version == row.package.version then 'installed' else button()}"
+      choices = (choice(version) for version in npm.versions.reverse())
+      "<h3>#{npm.description}</h3> <p>Choose a version to install.</p> <table>#{choices.join "\n"}"
 
     detail = (name, done) ->
       row = data.install.find (obj) -> obj.plugin == name
