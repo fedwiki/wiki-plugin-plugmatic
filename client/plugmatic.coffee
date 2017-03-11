@@ -112,12 +112,23 @@ emit = ($item, item) ->
       "<table style=\"width:100%;\"><tr> #{head} #{result}</table>
       <center><button>restart</button></center>"
 
-    install = (row, npm) ->
-      return "<p>can't find this in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
-      window.plugins.plugmatic.install = (version) -> console.log 'installing', version, row, npm
+    installer = (row, npm) ->
+      return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
+      installed = (data) ->  console.log('install success',data)
+      window.plugins.plugmatic.install = (version) ->
+        console.log 'installing', version, row, npm
+        $.ajax
+          type: "POST"
+          url: '/plugin/plugmatic/install'
+          data: JSON.stringify({version, plugin: row.plugin})
+          contentType: "application/json; charset=utf-8"
+          dataType: 'json'
+          success: installed
+          error: trouble
+
       choice = (version) ->
         button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
-        "<tr> <td> #{version} <td> #{if version == row.package.version then 'installed' else button()}"
+        "<tr> <td> #{version} <td> #{if version == row.package?.version then 'installed' else button()}"
       choices = (choice(version) for version in npm.versions.reverse())
       "<h3>#{npm.description}</h3> <p>Choose a version to install.</p> <table>#{choices.join "\n"}"
 
@@ -129,7 +140,7 @@ emit = ($item, item) ->
       birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
       npmjs = (more) -> $.getJSON "/plugin/plugmatic/view/#{name}", more
       switch column
-        when 'status' then npmjs (npm) -> done install row, npm
+        when 'status' then npmjs (npm) -> done installer row, npm
         when 'name' then done text row.authors
         when 'menu' then done struct row.factory
         when 'about' then done row.pages.map(abouts).join('')

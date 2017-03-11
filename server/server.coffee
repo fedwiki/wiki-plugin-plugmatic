@@ -119,6 +119,14 @@ startServer = (params) ->
     res.setHeader 'Content-Type', 'application/json'
     exec("npm view wiki-plugin-#{req.params.pkg} --json").stdout.pipe(res)
 
+  app.post route('install'), (req, res) ->
+    # check for admin auth
+    console.log 'install', req.body.plugin, req.body.version
+    if true
+      res.json {installed: req.body.version}
+    else
+      res.status(400).json {error: 'server unable to install plugin'}
+
   app.post route('restart'), (req, res) ->
     # check for admin auth
     console.log 'exit to restart'
