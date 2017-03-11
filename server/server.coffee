@@ -73,7 +73,7 @@ startServer = (params) ->
     async.series [birth,authors,packagejson,factory,pages], (err) ->
       done null, site
 
-  npmjs = (plugin, done) ->
+  view = (plugin, done) ->
     pkg = "wiki-plugin-#{plugin}"
     exec "npm view #{pkg} --json", (err, stdout, stderr) ->
       try npm = JSON.parse stdout
@@ -109,7 +109,7 @@ startServer = (params) ->
         payload.install = install; cb()
 
     published = (cb) ->
-      async.map req.body.plugins||[], npmjs, (err, results) ->
+      async.map req.body.plugins||[], view, (err, results) ->
         payload.publish = results; cb()
     
     async.parallel [installed, published], (err) ->
@@ -119,17 +119,19 @@ startServer = (params) ->
     res.setHeader 'Content-Type', 'application/json'
     exec("npm view wiki-plugin-#{req.params.pkg} --json").stdout.pipe(res)
 
-  app.post route('install'), (req, res) ->
-    # check for admin auth
+  app.post route('install'), admin, (req, res) ->
     console.log 'install', req.body.plugin, req.body.version
-    if true
-      res.json {installed: req.body.version}
-    else
-      res.status(400).json {error: 'server unable to install plugin'}
+    pkg = "wiki-plugin-#{req.body.plugin}@#{req.body.version}"
+    exec "npm install #{pkg} --json", (err, stdout, stderr) ->
+      console.log err, stdout, stderr
+      try npm = JSON.parse stdout
+      if err
+        res.status(400).json {error: 'server unable to install plugin', npm, stderr}
+      else
+        res.json {installed: req.body.version, npm, stderr}
 
-  app.post route('restart'), (req, res) ->
-    # check for admin auth
-    console.log 'exit to restart'
+  app.post route('restart'), admin, (req, res) ->
+    console.log 'plugmatic exit to restart'
     res.sendStatus 200
     process.exit 0
 
