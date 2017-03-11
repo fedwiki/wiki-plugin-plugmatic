@@ -119,5 +119,11 @@ startServer = (params) ->
     res.setHeader 'Content-Type', 'application/json'
     exec("npm view wiki-plugin-#{req.params.pkg} --json").stdout.pipe(res)
 
+  app.post route('restart'), (req, res) ->
+    # check for admin auth
+    console.log 'exit to restart'
+    res.sendStatus 200
+    process.exit 0
+
 
 module.exports = {startServer}

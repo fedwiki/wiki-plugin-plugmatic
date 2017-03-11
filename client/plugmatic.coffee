@@ -109,7 +109,8 @@ emit = ($item, item) ->
         plugins
       head = ("<td style='font-size:75%; color:gray;'>#{column}" for column in markup.columns).join "\n"
       result = (format markup, plugin, dependencies for plugin, index in inventory).join "\n"
-      "<table style=\"width:100%;\"><tr> #{head} #{result}</table>"
+      "<table style=\"width:100%;\"><tr> #{head} #{result}</table>
+      <center><button>restart</button></center>"
 
     install = (row, npm) ->
       return "<p>can't find this in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
@@ -156,6 +157,12 @@ emit = ($item, item) ->
     $item.find('p td').click (e) ->
       column = $(e.target).attr('title')
       showdetail e
+    $item.find('button').click (e) ->
+      $.ajax
+        type: "POST"
+        url: '/plugin/plugmatic/restart'
+        success: -> console.log('success')
+        error: trouble
 
   trouble = (xhr) -> 
     $item.find('p').html xhr.responseJSON?.error || 'server error'
