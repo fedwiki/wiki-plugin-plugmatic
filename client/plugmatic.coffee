@@ -5,9 +5,9 @@ any = (array) ->
 traffic = (installed, published) ->
   color =
     gray:   '#ccc'
-    red:    '#f77'
-    yellow: '#ff7'
-    green:  '#0f7' 
+    red:    '#f55'
+    yellow: '#fb0'
+    green:  '#0e0'
 
   if installed? and published?
     if installed == published
@@ -51,7 +51,7 @@ parse = (text) ->
     result.columns.push 'status'    if line.match /\STATUS\b/
     result.columns.push 'name'      if line.match /\bNAME\b/
     result.columns.push 'menu'      if line.match /\bMENU\b/
-    result.columns.push 'about'     if line.match /\bABOUT\b/
+    result.columns.push 'pages'     if line.match /\bPAGES\b/
     result.columns.push 'service'   if line.match /\bSERVICE\b/
     result.columns.push 'bundled'   if line.match /\bBUNDLED\b/
     result.columns.push 'installed' if line.match /\bINSTALLED\b/
@@ -59,9 +59,9 @@ parse = (text) ->
     result.plugins.push m[1]        if m = line.match /^wiki-plugin-(\w+)$/
   if result.columns.length == 0
     result.columns = if result.plugins.length == 0
-      ['name', 'about', 'menu', 'bundled', 'installed']
+      ['name', 'pages', 'menu', 'bundled', 'installed']
     else
-      ['status', 'name', 'about', 'bundled', 'installed', 'published']
+      ['status', 'name', 'pages', 'bundled', 'installed', 'published']
   result
 
 
@@ -91,11 +91,11 @@ emit = ($item, item) ->
       result = ["<tr class=row data-name=#{plugin.plugin}>"]
       for column in markup.columns
         result.push switch column
-          when 'status'    then "<td title=status style='color: #{status()}'>●"
+          when 'status'    then "<td title=status style='text-align:center; color: #{status()}'>◉"
           when 'name'      then "<td title=name> #{name}"
           when 'menu'      then "<td title=menu> #{plugin.factory?.category || ''}"
-          when 'about'     then "<td title=about> #{plugin.pages?.length || ''}"
-          when 'service'   then "<td title=service> #{months}"
+          when 'pages'     then "<td title=pages style='text-align:center;'>#{plugin.pages?.length || ''}"
+          when 'service'   then "<td title=service style='text-align:center;'>#{months}"
           when 'bundled'   then "<td title=bundled> #{dependencies['wiki-plugin-'+name] || ''}"
           when 'installed' then "<td title=installed> #{plugin.package?.version || ''}"
           when 'published' then "<td title=published> #{pub(name).npm?.version || ''}"
@@ -124,7 +124,7 @@ emit = ($item, item) ->
         data.install[index] = row = update.row
         $row.find("[title=status]").css('color',traffic(update.installed, npm.version))
         $row.find("[title=menu]").text(row.factory?.category || '')
-        $row.find("[title=about]").text(row.pages?.length || '')
+        $row.find("[title=pages]").text(row.pages?.length || '')
         $row.find('[title=service]').text('0')
         $row.find("[title=installed]").text(row.package?.version || '')
 
@@ -152,14 +152,14 @@ emit = ($item, item) ->
       row = data.install.find (obj) -> obj.plugin == name
       text = (obj) -> return '' unless obj; (expand obj).replace(/\n/g,'<br>')
       struct = (obj) -> return '' unless obj; "<pre>#{expand JSON.stringify obj, null, '  '}</pre>"
-      abouts = (obj) -> "<p><b><a href=#>#{obj.title}</a></b><br>#{obj.synopsis}</p>"
+      pages = (obj) -> "<p><b><a href=#>#{obj.title}</a></b><br>#{obj.synopsis}</p>"
       birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
       npmjs = (more) -> $.getJSON "/plugin/plugmatic/view/#{name}", more
       switch column
         when 'status' then npmjs (npm) -> done installer row, npm
         when 'name' then done text row.authors
         when 'menu' then done struct row.factory
-        when 'about' then done row.pages.map(abouts).join('')
+        when 'pages' then done row.pages.map(pages).join('')
         when 'service' then done birth row.birth
         when 'bundled' then done struct data.bundle.data.dependencies
         when 'installed' then done struct row.package

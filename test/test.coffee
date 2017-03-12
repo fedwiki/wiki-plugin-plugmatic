@@ -7,8 +7,8 @@ expect = require 'expect.js'
 describe 'plugmatic plugin', ->
 
   # we default to less columns when there is lots to do
-  lots = ['name', 'about', 'menu', 'bundled', 'installed']
-  some = ['status', 'name', 'about', 'bundled', 'installed', 'published']
+  lots = ['name', 'pages', 'menu', 'bundled', 'installed']
+  some = ['status', 'name', 'pages', 'bundled', 'installed', 'published']
 
   describe 'columns', ->
 
@@ -37,8 +37,8 @@ describe 'plugmatic plugin', ->
       expect(result.columns).to.eql ['status', 'menu', 'bundled', 'installed', 'published']
 
     it 'recognizes counts', ->
-      result = plugmatic.parse "ABOUT\nSERVICE"
-      expect(result.columns).to.eql ['about', 'service']
+      result = plugmatic.parse "PAGES\nSERVICE"
+      expect(result.columns).to.eql ['pages', 'service']
 
     it 'ignores punctuation', ->
       result = plugmatic.parse '  NAME.'
