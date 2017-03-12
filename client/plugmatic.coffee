@@ -114,7 +114,12 @@ emit = ($item, item) ->
 
     installer = (row, npm) ->
       return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
-      installed = (data) ->  console.log('install success',data)
+      $row = $item.find "table [data-name=#{row.plugin}]"
+      installed = (data) ->
+        console.log('install success',data)
+        $row.find("[title=installed]").text(data.installed)
+        $row.find("[title=status]").css('color','blue')
+
       window.plugins.plugmatic.install = (version) ->
         console.log 'installing', version, row, npm
         $.ajax
@@ -125,7 +130,7 @@ emit = ($item, item) ->
           dataType: 'json'
           success: installed
           error: trouble
-
+        $row.find("[title=status]").css('color','black')
       choice = (version) ->
         button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
         "<tr> <td> #{version} <td> #{if version == row.package?.version then 'installed' else button()}"
