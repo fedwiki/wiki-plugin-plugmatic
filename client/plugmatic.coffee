@@ -25,7 +25,6 @@ escape = (text) ->
     .replace /&/g, '&amp;'
     .replace /</g, '&lt;'
     .replace />/g, '&gt;'
-    .replace /\*(.+?)\*/g, '<i>$1</i>'
 
 expand = (string) ->
   stashed = []
@@ -74,7 +73,7 @@ emit = ($item, item) ->
   """
 
   render = (data) ->
-    column = 'version'
+    column = 'installed'
     pub = (name) -> data.publish.find (obj) -> obj.plugin == name
 
     format = (markup, plugin, dependencies) ->
@@ -113,13 +112,12 @@ emit = ($item, item) ->
       head = ("<td style='font-size:75%; color:gray;'>#{column}" for column in markup.columns).join "\n"
       result = (format markup, plugin, dependencies for plugin, index in inventory).join "\n"
       "<table style=\"width:100%;\"><tr> #{head} #{result}</table>
-      <center><button>restart</button></center>"
+      <center><button class=restart>restart</button></center>"
 
     installer = (row, npm) ->
       return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
       $row = $item.find "table [data-name=#{row.plugin}]"
       installed = (update) ->
-        console.log('installed update',update)
         index = data.install.indexOf row
         data.install[index] = row = update.row
         $row.find("[title=status]").css('color',traffic(update.installed, npm.version))
@@ -127,9 +125,9 @@ emit = ($item, item) ->
         $row.find("[title=pages]").text(row.pages?.length || '')
         $row.find('[title=service]').text('0')
         $row.find("[title=installed]").text(row.package?.version || '')
+        $item.find('button.restart').removeAttr('disabled').show()
 
       window.plugins.plugmatic.install = (version) ->
-        console.log 'installing', version, row, npm
         $.ajax
           type: 'POST'
           url: '/plugin/plugmatic/install'
@@ -184,11 +182,14 @@ emit = ($item, item) ->
     $item.find('p td').click (e) ->
       column = $(e.target).attr('title')
       showdetail e
-    $item.find('button').click (e) ->
+    $item.find('button.restart').hide().click (e) ->
+      $item.find('button.restart').attr("disabled","disabled")
       $.ajax
         type: 'POST'
         url: '/plugin/plugmatic/restart'
-        success: -> console.log('success')
+        success: ->
+          # poll for restart complete, then ...
+          # $item.find('button.restart').hide()
         error: trouble
 
   trouble = (xhr) -> 
