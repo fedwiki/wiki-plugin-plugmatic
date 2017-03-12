@@ -2,11 +2,23 @@
 any = (array) ->
   array[Math.floor Math.random()*array.length]
 
-traffic =
-  gray:   '#ccc'
-  red:    '#f77'
-  yellow: '#ff7'
-  green:  '#0f7'
+traffic = (installed, published) ->
+  color =
+    gray:   '#ccc'
+    red:    '#f77'
+    yellow: '#ff7'
+    green:  '#0f7' 
+
+  if installed? and published?
+    if installed == published
+      color.green
+    else
+      color.yellow
+  else
+    if published?
+      color.red
+    else
+      color.gray
 
 escape = (text) ->
   text
@@ -74,16 +86,7 @@ emit = ($item, item) ->
       status = ->
         installed = plugin.package?.version
         published = pub(name).npm?.version
-        if installed? and published?
-          if installed == published
-            traffic.green
-          else
-            traffic.yellow
-        else
-          if published?
-            traffic.red
-          else
-            traffic.gray
+        traffic installed, published
 
       result = ["<tr class=row data-name=#{plugin.plugin}>"]
       for column in markup.columns
@@ -115,15 +118,20 @@ emit = ($item, item) ->
     installer = (row, npm) ->
       return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
       $row = $item.find "table [data-name=#{row.plugin}]"
-      installed = (data) ->
-        console.log('install success',data)
-        $row.find("[title=installed]").text(data.installed)
-        $row.find("[title=status]").css('color','blue')
+      installed = (update) ->
+        console.log('installed update',update)
+        index = data.install.indexOf row
+        data.install[index] = row = update.row
+        $row.find("[title=status]").css('color',traffic(update.installed, npm.version))
+        $row.find("[title=menu]").text(row.factory?.category || '')
+        $row.find("[title=about]").text(row.pages?.length || '')
+        $row.find('[title=service]').text('0')
+        $row.find("[title=installed]").text(row.package?.version || '')
 
       window.plugins.plugmatic.install = (version) ->
         console.log 'installing', version, row, npm
         $.ajax
-          type: "POST"
+          type: 'POST'
           url: '/plugin/plugmatic/install'
           data: JSON.stringify({version, plugin: row.plugin})
           contentType: "application/json; charset=utf-8"
@@ -131,7 +139,7 @@ emit = ($item, item) ->
           success: installed
           error: trouble
         # http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
-        $row.find("[title=status]").css('color','black')
+        $row.find("[title=status]").css('color','white')
         $('.ui-dialog-content:visible').dialog('close')
 
       choice = (version) ->
@@ -178,7 +186,7 @@ emit = ($item, item) ->
       showdetail e
     $item.find('button').click (e) ->
       $.ajax
-        type: "POST"
+        type: 'POST'
         url: '/plugin/plugmatic/restart'
         success: -> console.log('success')
         error: trouble

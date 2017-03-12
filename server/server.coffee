@@ -128,7 +128,8 @@ startServer = (params) ->
       if err
         res.status(400).json {error: 'server unable to install plugin', npm, stderr}
       else
-        res.json {installed: req.body.version, npm, stderr}
+        info "wiki-plugin-#{req.body.plugin}", (err, row) ->
+          res.json {installed: req.body.version, npm, stderr, row}
 
   app.post route('restart'), admin, (req, res) ->
     console.log 'plugmatic exit to restart'
