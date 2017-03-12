@@ -130,7 +130,10 @@ emit = ($item, item) ->
           dataType: 'json'
           success: installed
           error: trouble
+        # http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
         $row.find("[title=status]").css('color','black')
+        $('.ui-dialog-content:visible').dialog('close')
+
       choice = (version) ->
         button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
         "<tr> <td> #{version} <td> #{if version == row.package?.version then 'installed' else button()}"
