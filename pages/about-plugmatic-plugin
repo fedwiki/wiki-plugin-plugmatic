@@ -1,37 +1,437 @@
 {
   "title": "About Plugmatic Plugin",
   "story": [
-  {
-    "type": "paragraph",
-    "id": "2f538303a2750c3b",
-    "text": "This plugin queries the origin server for information about installed plugins. Eventually server administrators will install new and updated plugins here."
-  },
-  {
-    "type": "plugmatic",
-    "id": "aa516c1dac55e70b",
-    "text": "NAME\nMENU\nABOUT\nBUNDLED\nINSTALLED\nSERVICE"
-  }
-],
-  "journal": [
-  {
-    "type": "create",
-    "item": {
-      "title": "About Plugmatic Plugin",
-      "story": [
-  {
-    "type": "paragraph",
-    "id": "2f538303a2750c3b",
-    "text": "This plugin queries the origin server for information about installed plugins. Eventually server administrators will install new and updated plugins here."
-  },
-  {
-    "type": "plugmatic",
-    "id": "aa516c1dac55e70b",
-    "text": "NAME\nMENU\nABOUT\nBUNDLED\nINSTALLED\nSERVICE"
-  }
-]
+    {
+      "type": "paragraph",
+      "id": "2f538303a2750c3b",
+      "text": "This plugin queries the origin server for information about installed plugins. Server administrators can install new or updated existing plugins from included inventories."
     },
-    "date": 1480285838000,
-    "certificate": "from mkplugin.sh"
-  }
-]
+    {
+      "type": "plugmatic",
+      "id": "aa516c1dac55e70b",
+      "text": "NAME\nPAGES\nBUNDLED\nINSTALLED\nSERVICE"
+    },
+    {
+      "type": "paragraph",
+      "id": "0493f7b0cfd21257",
+      "text": "See [[Managing Lists of Plugins]] for creating and sharing lists of plugins that work well together."
+    },
+    {
+      "type": "paragraph",
+      "id": "b969dd3737d97378",
+      "text": "See [[More about Plugmatic Plugin]] for details regarding system administration."
+    },
+    {
+      "type": "markdown",
+      "id": "2d06e967877db124",
+      "text": "# Markup"
+    },
+    {
+      "type": "paragraph",
+      "id": "b6188808197e3b69",
+      "text": "Markup lines may include a full plugin name or a keyword. Keywords select columns and column order for reporting properties of each plugin."
+    },
+    {
+      "type": "paragraph",
+      "id": "48788863a76362b3",
+      "text": "Say STATUS for a traffic light indicating install options."
+    },
+    {
+      "type": "paragraph",
+      "id": "405b19fdcca54bb4",
+      "text": "Say NAME for the plugin name, sans wiki-plugin- prefix."
+    },
+    {
+      "type": "paragraph",
+      "id": "826eb0f7d761ce48",
+      "text": "Say MENU for Factory menu category, blank if unlisted."
+    },
+    {
+      "type": "paragraph",
+      "id": "565ef5763ec2cd95",
+      "text": "Say PAGES for count of about pages, blank if none."
+    },
+    {
+      "type": "paragraph",
+      "id": "0887156a2681e9ae",
+      "text": "Say SERVICE for months installed, blank if absent or core."
+    },
+    {
+      "type": "paragraph",
+      "id": "5065dfdf958ce3d9",
+      "text": "Say BUNDLED for version in wiki, blank if not bundled."
+    },
+    {
+      "type": "paragraph",
+      "id": "1033c6eede13b0f9",
+      "text": "Say INSTALLED for version now installed, blank if absent."
+    },
+    {
+      "type": "paragraph",
+      "id": "856d733cdab8fd8e",
+      "text": "Say PUBLISHED for version posted to npm, blank if none."
+    },
+    {
+      "type": "paragraph",
+      "id": "05248b5013cd7a8c",
+      "text": "Click on any of these columns to bring up a dialog of related information. Press shift and hover over any row to refresh the dialog with information for a different plugin."
+    },
+    {
+      "type": "paragraph",
+      "id": "698979e7fd5fce6e",
+      "text": "If no columns are requested a default list will be provided. Both STATUS and PUBLISHED require slow queries of npm so these are avoided except when specific plugins are inventoried."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Plugmatic Plugin",
+        "story": [
+          {
+            "type": "paragraph",
+            "id": "2f538303a2750c3b",
+            "text": "This plugin queries the origin server for information about installed plugins. Eventually server administrators will install new and updated plugins here."
+          },
+          {
+            "type": "plugmatic",
+            "id": "aa516c1dac55e70b",
+            "text": "NAME\nMENU\nABOUT\nBUNDLED\nINSTALLED\nSERVICE"
+          }
+        ]
+      },
+      "date": 1480285838000,
+      "certificate": "from mkplugin.sh"
+    },
+    {
+      "type": "edit",
+      "id": "2f538303a2750c3b",
+      "item": {
+        "type": "paragraph",
+        "id": "2f538303a2750c3b",
+        "text": "This plugin queries the origin server for information about installed plugins. Server administrators can install new or updated existing plugins from inventories included as markup."
+      },
+      "date": 1489357277026
+    },
+    {
+      "type": "edit",
+      "id": "2f538303a2750c3b",
+      "item": {
+        "type": "paragraph",
+        "id": "2f538303a2750c3b",
+        "text": "This plugin queries the origin server for information about installed plugins. Server administrators can install new or updated existing plugins from included inventories."
+      },
+      "date": 1489357306962
+    },
+    {
+      "type": "edit",
+      "id": "aa516c1dac55e70b",
+      "item": {
+        "type": "plugmatic",
+        "id": "aa516c1dac55e70b",
+        "text": "NAME\nMENU\nPAGES\nBUNDLED\nINSTALLED\nSERVICE"
+      },
+      "date": 1489357415645
+    },
+    {
+      "type": "edit",
+      "id": "aa516c1dac55e70b",
+      "item": {
+        "type": "plugmatic",
+        "id": "aa516c1dac55e70b",
+        "text": "NAME\nPAGES\nBUNDLED\nINSTALLED\nSERVICE"
+      },
+      "date": 1489357440726
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "0493f7b0cfd21257"
+      },
+      "id": "0493f7b0cfd21257",
+      "type": "add",
+      "after": "aa516c1dac55e70b",
+      "date": 1489357729480
+    },
+    {
+      "type": "edit",
+      "id": "0493f7b0cfd21257",
+      "item": {
+        "type": "paragraph",
+        "id": "0493f7b0cfd21257",
+        "text": "See [[Managing Lists of Plugins]] for creating and sharing lists of plugins that work well together."
+      },
+      "date": 1489357785435
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "2d06e967877db124"
+      },
+      "id": "2d06e967877db124",
+      "type": "add",
+      "after": "0493f7b0cfd21257",
+      "date": 1489357797956
+    },
+    {
+      "type": "edit",
+      "id": "2d06e967877db124",
+      "item": {
+        "type": "markdown",
+        "id": "2d06e967877db124",
+        "text": "# Markup"
+      },
+      "date": 1489357807489
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "d03ebe853ceb0e82"
+      },
+      "id": "d03ebe853ceb0e82",
+      "type": "add",
+      "after": "2d06e967877db124",
+      "date": 1489358108629
+    },
+    {
+      "type": "edit",
+      "id": "d03ebe853ceb0e82",
+      "item": {
+        "type": "paragraph",
+        "id": "d03ebe853ceb0e82",
+        "text": "Markup keywords select columns and column order for reporting properties of each plugin."
+      },
+      "date": 1489358214040
+    },
+    {
+      "type": "add",
+      "id": "b6188808197e3b69",
+      "item": {
+        "type": "paragraph",
+        "id": "b6188808197e3b69",
+        "text": "Markup lines may include a full plugin name or a keyword."
+      },
+      "after": "d03ebe853ceb0e82",
+      "date": 1489358294875
+    },
+    {
+      "type": "move",
+      "order": [
+        "2f538303a2750c3b",
+        "aa516c1dac55e70b",
+        "0493f7b0cfd21257",
+        "2d06e967877db124",
+        "b6188808197e3b69",
+        "d03ebe853ceb0e82"
+      ],
+      "id": "b6188808197e3b69",
+      "date": 1489358299148
+    },
+    {
+      "type": "remove",
+      "id": "d03ebe853ceb0e82",
+      "date": 1489358307307
+    },
+    {
+      "type": "edit",
+      "id": "b6188808197e3b69",
+      "item": {
+        "type": "paragraph",
+        "id": "b6188808197e3b69",
+        "text": "Markup lines may include a full plugin name or a keyword. Keywords select columns and column order for reporting properties of each plugin."
+      },
+      "date": 1489358317726
+    },
+    {
+      "type": "add",
+      "id": "48788863a76362b3",
+      "item": {
+        "type": "paragraph",
+        "id": "48788863a76362b3",
+        "text": "Say STATUS for a traffic light indicating green for current, yellow for updatable, red for not installed, gray for unknown and, white for install in progress."
+      },
+      "after": "b6188808197e3b69",
+      "date": 1489358607581
+    },
+    {
+      "type": "add",
+      "id": "405b19fdcca54bb4",
+      "item": {
+        "type": "paragraph",
+        "id": "405b19fdcca54bb4",
+        "text": "Say NAME for the plugin name, sans wiki-plugin- prefix."
+      },
+      "after": "48788863a76362b3",
+      "date": 1489358672753
+    },
+    {
+      "type": "add",
+      "id": "826eb0f7d761ce48",
+      "item": {
+        "type": "paragraph",
+        "id": "826eb0f7d761ce48",
+        "text": "Say MENU for Factory menu category, blank if unlisted."
+      },
+      "after": "405b19fdcca54bb4",
+      "date": 1489358719572
+    },
+    {
+      "type": "add",
+      "id": "565ef5763ec2cd95",
+      "item": {
+        "type": "paragraph",
+        "id": "565ef5763ec2cd95",
+        "text": "Say PAGES for count of about pages, blank if none."
+      },
+      "after": "826eb0f7d761ce48",
+      "date": 1489358744821
+    },
+    {
+      "type": "add",
+      "id": "0887156a2681e9ae",
+      "item": {
+        "type": "paragraph",
+        "id": "0887156a2681e9ae",
+        "text": "Say SERVICE for months since installed, blank for core plugins."
+      },
+      "after": "565ef5763ec2cd95",
+      "date": 1489358803882
+    },
+    {
+      "type": "add",
+      "id": "5065dfdf958ce3d9",
+      "item": {
+        "type": "paragraph",
+        "id": "5065dfdf958ce3d9",
+        "text": "BUNDLED\\b\nINSTALLED\nPUBLISHED"
+      },
+      "after": "0887156a2681e9ae",
+      "date": 1489358806966
+    },
+    {
+      "type": "edit",
+      "id": "0887156a2681e9ae",
+      "item": {
+        "type": "paragraph",
+        "id": "0887156a2681e9ae",
+        "text": "Say SERVICE for months installed, blank for buit-ins."
+      },
+      "date": 1489358825566
+    },
+    {
+      "type": "edit",
+      "id": "5065dfdf958ce3d9",
+      "item": {
+        "type": "paragraph",
+        "id": "5065dfdf958ce3d9",
+        "text": "Say BUNDLED for version bundled with wiki, blank if unbundled."
+      },
+      "date": 1489358958451
+    },
+    {
+      "type": "add",
+      "id": "1033c6eede13b0f9",
+      "item": {
+        "type": "paragraph",
+        "id": "1033c6eede13b0f9",
+        "text": "INSTALLED\nPUBLISHED"
+      },
+      "after": "5065dfdf958ce3d9",
+      "date": 1489358967137
+    },
+    {
+      "type": "edit",
+      "id": "5065dfdf958ce3d9",
+      "item": {
+        "type": "paragraph",
+        "id": "5065dfdf958ce3d9",
+        "text": "Say BUNDLED for version in wiki, blank if unbundled."
+      },
+      "date": 1489358983298
+    },
+    {
+      "type": "edit",
+      "id": "1033c6eede13b0f9",
+      "item": {
+        "type": "paragraph",
+        "id": "1033c6eede13b0f9",
+        "text": "Say INSTALLED for version now installed, blank if absent."
+      },
+      "date": 1489359042306
+    },
+    {
+      "type": "add",
+      "id": "856d733cdab8fd8e",
+      "item": {
+        "type": "paragraph",
+        "id": "856d733cdab8fd8e",
+        "text": "Say PUBLISHED for version posted to npm, blank if none."
+      },
+      "after": "1033c6eede13b0f9",
+      "date": 1489359136975
+    },
+    {
+      "type": "edit",
+      "id": "48788863a76362b3",
+      "item": {
+        "type": "paragraph",
+        "id": "48788863a76362b3",
+        "text": "Say STATUS for a traffic light indicating install options."
+      },
+      "date": 1489359193920
+    },
+    {
+      "type": "edit",
+      "id": "0887156a2681e9ae",
+      "item": {
+        "type": "paragraph",
+        "id": "0887156a2681e9ae",
+        "text": "Say SERVICE for months installed, blank if absent or core."
+      },
+      "date": 1489359300020
+    },
+    {
+      "type": "edit",
+      "id": "5065dfdf958ce3d9",
+      "item": {
+        "type": "paragraph",
+        "id": "5065dfdf958ce3d9",
+        "text": "Say BUNDLED for version in wiki, blank if not bundled."
+      },
+      "date": 1489359330601
+    },
+    {
+      "type": "add",
+      "id": "b969dd3737d97378",
+      "item": {
+        "type": "paragraph",
+        "id": "b969dd3737d97378",
+        "text": "See [[More about Plugmatic Plugin]] for details regarding system administration."
+      },
+      "after": "0493f7b0cfd21257",
+      "date": 1489359480237
+    },
+    {
+      "type": "add",
+      "id": "698979e7fd5fce6e",
+      "item": {
+        "type": "paragraph",
+        "id": "698979e7fd5fce6e",
+        "text": "If no columns are requested a default list will be provided. Both STATUS and PUBLISHED require slow queries of npm so these are avoided except when specific plugins are inventoried."
+      },
+      "after": "856d733cdab8fd8e",
+      "date": 1489359844857
+    },
+    {
+      "type": "add",
+      "id": "05248b5013cd7a8c",
+      "item": {
+        "type": "paragraph",
+        "id": "05248b5013cd7a8c",
+        "text": "Click on any of these columns to bring up a dialog of related information. Press shift and hover over any row to refresh the dialog with information for a different plugin."
+      },
+      "after": "856d733cdab8fd8e",
+      "date": 1489361231850
+    }
+  ]
 }

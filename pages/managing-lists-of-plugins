@@ -1,0 +1,102 @@
+{
+  "title": "Managing Lists of Plugins",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "87ab89a5da040b0c",
+      "text": "The Plugmatic plugin can be configured with a list of plugins that work well together and can be managed by a server administrator from within wiki itself."
+    },
+    {
+      "type": "paragraph",
+      "id": "2e07f255d693b71b",
+      "text": "[[Text Plugins]] render markup to be read."
+    },
+    {
+      "type": "paragraph",
+      "id": "09781ea471808f7a",
+      "text": "[[Data Plugins]] create and share data between pages."
+    },
+    {
+      "type": "paragraph",
+      "id": "0a667864178124da",
+      "text": "[[Admin Plugins]] manage sites and servers."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Managing Lists of Plugins",
+        "story": []
+      },
+      "date": 1489355579411
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "87ab89a5da040b0c"
+      },
+      "id": "87ab89a5da040b0c",
+      "type": "add",
+      "date": 1489355604598
+    },
+    {
+      "type": "edit",
+      "id": "87ab89a5da040b0c",
+      "item": {
+        "type": "paragraph",
+        "id": "87ab89a5da040b0c",
+        "text": "The Plugmatic plugin can be configured with a list of plugins that work well together and can be managed by a server administrator from within wiki itself."
+      },
+      "date": 1489355766135
+    },
+    {
+      "type": "add",
+      "id": "2e07f255d693b71b",
+      "item": {
+        "type": "paragraph",
+        "id": "2e07f255d693b71b",
+        "text": "[[Text Formatting Plugins]] that render various markups into items to be read."
+      },
+      "after": "87ab89a5da040b0c",
+      "date": 1489356036720
+    },
+    {
+      "type": "edit",
+      "id": "2e07f255d693b71b",
+      "item": {
+        "type": "paragraph",
+        "id": "2e07f255d693b71b",
+        "text": "[[Text Plugins]] render markup to be read."
+      },
+      "date": 1489356131953
+    },
+    {
+      "type": "add",
+      "id": "09781ea471808f7a",
+      "item": {
+        "type": "paragraph",
+        "id": "09781ea471808f7a",
+        "text": "[[Data Plugins]] create and share data between pages."
+      },
+      "after": "2e07f255d693b71b",
+      "date": 1489356287508
+    },
+    {
+      "type": "add",
+      "id": "0a667864178124da",
+      "item": {
+        "type": "paragraph",
+        "id": "0a667864178124da",
+        "text": "[[Admin Plugins]] manage sites and servers."
+      },
+      "after": "09781ea471808f7a",
+      "date": 1489356385609
+    },
+    {
+      "type": "fork",
+      "site": "plugins.fed.wiki.org",
+      "date": 1489360756719
+    }
+  ]
+}

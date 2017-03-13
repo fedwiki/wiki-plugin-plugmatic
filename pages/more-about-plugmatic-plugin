@@ -1,0 +1,437 @@
+{
+  "title": "More about Plugmatic Plugin",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "3e30b250f5d51fe0",
+      "text": "A server administrator can use Plugmatic to install or update plugins made available for interpreting markup found on wiki pages."
+    },
+    {
+      "type": "markdown",
+      "id": "ca55ae017d2559fd",
+      "text": "# Administrator"
+    },
+    {
+      "type": "paragraph",
+      "id": "1d399544524196b7",
+      "text": "Changes will apply to the origin site and all other sites hosted by the same server should that be a wiki farm."
+    },
+    {
+      "type": "paragraph",
+      "id": "35782001b3374a60",
+      "text": "Update features require that the user be the registered and logged-in administrator for the server. Update features do not require that the Plugmatic content reside on a page served by the origin."
+    },
+    {
+      "type": "paragraph",
+      "id": "0451f8f90c9a59f1",
+      "text": "An administrator is identified by the --admin parameter when starting wiki. The admin value would depend on how individuals are identified by the security module in use."
+    },
+    {
+      "type": "code",
+      "id": "1cfe7c6c3602055c",
+      "text": "wiki -f --admin ward@c2.com"
+    },
+    {
+      "type": "markdown",
+      "id": "f37ab08a04582bc1",
+      "text": "# Installation"
+    },
+    {
+      "type": "image",
+      "id": "62361581c8ce4e5e",
+      "url": "data:image/jpeg;base64,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",
+      "caption": "Uploaded image",
+      "text": "The STATUS dialog offers to install any available version other than that currently installed."
+    },
+    {
+      "type": "paragraph",
+      "id": "42d4973eb6acfc22",
+      "text": "Click on a STATUS traffic light to bring up the version installation dialog. The traffic light color indicates what installation actions are expected. Choices are confirmed by the arrangement of the dialog."
+    },
+    {
+      "type": "paragraph",
+      "id": "b789455eb409feea",
+      "text": "Green means that the preferred version of the plugin as reported by npm is already installed."
+    },
+    {
+      "type": "paragraph",
+      "id": "92ef9e596aec3359",
+      "text": "Yellow means that an earlier version of a plugin is installed. This might be acceptable but an upgrade will be offered."
+    },
+    {
+      "type": "paragraph",
+      "id": "50519f8d9bdb033d",
+      "text": "Read means that no version of a plugin is installed so that content expecting that plugin won't show."
+    },
+    {
+      "type": "paragraph",
+      "id": "c02b145f24d8fffe",
+      "text": "Gray means that no version of the plugin has been located so an installation is not possible."
+    },
+    {
+      "type": "paragraph",
+      "id": "2e7cd1243b425f3f",
+      "text": "White means that an installation is in progress. Expect another color to appear soon."
+    },
+    {
+      "type": "markdown",
+      "id": "998d3c83aa3a8106",
+      "text": "# Restart"
+    },
+    {
+      "type": "paragraph",
+      "id": "35fa7eca46d6eac2",
+      "text": "A Restart button appears after any version of any plugin has been installed. Changes can be viewed through the Plugmatic interface before they become available through a server restart. "
+    },
+    {
+      "type": "paragraph",
+      "id": "7ee21d036f6920e1",
+      "text": "The Restart button is disabled once a restart starts. It will be re enabled with any subsequent install. We don't yet have a reliable signal for when the restart completes. Any server errors encountered during restart can be cleared by refreshing the web page."
+    },
+    {
+      "type": "paragraph",
+      "id": "2ac3e071bcea91dc",
+      "text": "Restart requires a recently added wiki server-side feature. Use the command line npm install to update wiki before using these Plugmatic commands."
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "More about Plugmatic Plugin",
+        "story": []
+      },
+      "date": 1489360772886
+    },
+    {
+      "type": "fork",
+      "date": 1489361808189
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "3e30b250f5d51fe0"
+      },
+      "id": "3e30b250f5d51fe0",
+      "type": "add",
+      "date": 1489361825839
+    },
+    {
+      "type": "edit",
+      "id": "3e30b250f5d51fe0",
+      "item": {
+        "type": "paragraph",
+        "id": "3e30b250f5d51fe0",
+        "text": "A server administrator can use Plugmatic to install or update plugins made available for interpreting markup found on wiki pages."
+      },
+      "date": 1489362196788
+    },
+    {
+      "type": "add",
+      "id": "1d399544524196b7",
+      "item": {
+        "type": "paragraph",
+        "id": "1d399544524196b7",
+        "text": "Changes will apply to the origin site and all other sites hosted by the same server should that be a wiki farm. Update features require that the user be the registered and logged-in administrator for the server. Update features do not require that the Plugmatic content reside on a page served by the origin."
+      },
+      "after": "3e30b250f5d51fe0",
+      "date": 1489362391875
+    },
+    {
+      "type": "edit",
+      "id": "1d399544524196b7",
+      "item": {
+        "type": "paragraph",
+        "id": "1d399544524196b7",
+        "text": "Changes will apply to the origin site and all other sites hosted by the same server should that be a wiki farm."
+      },
+      "date": 1489362408277
+    },
+    {
+      "type": "add",
+      "id": "35782001b3374a60",
+      "item": {
+        "type": "paragraph",
+        "id": "35782001b3374a60",
+        "text": "Update features require that the user be the registered and logged-in administrator for the server. Update features do not require that the Plugmatic content reside on a page served by the origin."
+      },
+      "after": "1d399544524196b7",
+      "date": 1489362409616
+    },
+    {
+      "type": "add",
+      "id": "0451f8f90c9a59f1",
+      "item": {
+        "type": "paragraph",
+        "id": "0451f8f90c9a59f1",
+        "text": "An administrator can be identified by the "
+      },
+      "after": "35782001b3374a60",
+      "date": 1489362469871
+    },
+    {
+      "type": "edit",
+      "id": "0451f8f90c9a59f1",
+      "item": {
+        "type": "paragraph",
+        "id": "0451f8f90c9a59f1",
+        "text": "An administrator can be identified by the --admin parameter when starting wiki."
+      },
+      "date": 1489362543225
+    },
+    {
+      "type": "edit",
+      "id": "0451f8f90c9a59f1",
+      "item": {
+        "type": "paragraph",
+        "id": "0451f8f90c9a59f1",
+        "text": "An administrator is identified by the --admin parameter when starting wiki."
+      },
+      "date": 1489362556697
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "1cfe7c6c3602055c"
+      },
+      "id": "1cfe7c6c3602055c",
+      "type": "add",
+      "after": "0451f8f90c9a59f1",
+      "date": 1489362558614
+    },
+    {
+      "type": "edit",
+      "id": "1cfe7c6c3602055c",
+      "item": {
+        "type": "code",
+        "id": "1cfe7c6c3602055c",
+        "text": "wiki -f --admin ward@c2.com"
+      },
+      "date": 1489362588172
+    },
+    {
+      "type": "add",
+      "id": "ca55ae017d2559fd",
+      "item": {
+        "type": "paragraph",
+        "id": "ca55ae017d2559fd",
+        "text": "# Administration"
+      },
+      "after": "3e30b250f5d51fe0",
+      "date": 1489362650998
+    },
+    {
+      "type": "edit",
+      "id": "ca55ae017d2559fd",
+      "item": {
+        "type": "paragraph",
+        "id": "ca55ae017d2559fd",
+        "text": "# Administrator"
+      },
+      "date": 1489362666756
+    },
+    {
+      "type": "edit",
+      "id": "ca55ae017d2559fd",
+      "item": {
+        "type": "markdown",
+        "id": "ca55ae017d2559fd",
+        "text": "# Administrator"
+      },
+      "date": 1489362669966
+    },
+    {
+      "type": "edit",
+      "id": "0451f8f90c9a59f1",
+      "item": {
+        "type": "paragraph",
+        "id": "0451f8f90c9a59f1",
+        "text": "An administrator is identified by the --admin parameter when starting wiki. The admin value would depend on how individuals are identified by the configured security module."
+      },
+      "date": 1489362745996
+    },
+    {
+      "type": "edit",
+      "id": "0451f8f90c9a59f1",
+      "item": {
+        "type": "paragraph",
+        "id": "0451f8f90c9a59f1",
+        "text": "An administrator is identified by the --admin parameter when starting wiki. The admin value would depend on how individuals are identified by the security module in use."
+      },
+      "date": 1489362767979
+    },
+    {
+      "item": {
+        "type": "factory",
+        "id": "f37ab08a04582bc1"
+      },
+      "id": "f37ab08a04582bc1",
+      "type": "add",
+      "after": "1cfe7c6c3602055c",
+      "date": 1489362801910
+    },
+    {
+      "type": "edit",
+      "id": "f37ab08a04582bc1",
+      "item": {
+        "type": "paragraph",
+        "id": "f37ab08a04582bc1",
+        "text": "# Inventory"
+      },
+      "date": 1489362816611
+    },
+    {
+      "type": "edit",
+      "id": "f37ab08a04582bc1",
+      "item": {
+        "type": "paragraph",
+        "id": "f37ab08a04582bc1",
+        "text": "# Installation"
+      },
+      "date": 1489362847195
+    },
+    {
+      "type": "add",
+      "id": "42d4973eb6acfc22",
+      "item": {
+        "type": "paragraph",
+        "id": "42d4973eb6acfc22",
+        "text": "Click on a STATUS traffic light to bring up the version installation dialog. The traffic light color indicates what installation actions are expected. Choices are confirmed by the arrangement of the dialog."
+      },
+      "after": "f37ab08a04582bc1",
+      "date": 1489362999814
+    },
+    {
+      "type": "add",
+      "id": "b789455eb409feea",
+      "item": {
+        "type": "paragraph",
+        "id": "b789455eb409feea",
+        "text": "Green means that the preferred version of the plugin as reported by npm is already installed."
+      },
+      "after": "42d4973eb6acfc22",
+      "date": 1489363081668
+    },
+    {
+      "type": "add",
+      "id": "92ef9e596aec3359",
+      "item": {
+        "type": "paragraph",
+        "id": "92ef9e596aec3359",
+        "text": "Yellow means that an earlier version of a plugin is installed. This might be acceptable but an upgrade will be offered."
+      },
+      "after": "b789455eb409feea",
+      "date": 1489363132749
+    },
+    {
+      "type": "add",
+      "id": "50519f8d9bdb033d",
+      "item": {
+        "type": "paragraph",
+        "id": "50519f8d9bdb033d",
+        "text": "Read means that no version of a plugin is installed so that content expecting that plugin won't show."
+      },
+      "after": "92ef9e596aec3359",
+      "date": 1489363182640
+    },
+    {
+      "type": "add",
+      "id": "c02b145f24d8fffe",
+      "item": {
+        "type": "paragraph",
+        "id": "c02b145f24d8fffe",
+        "text": "Gray means that no version of the plugin has been located so an installation is not possible."
+      },
+      "after": "50519f8d9bdb033d",
+      "date": 1489363249635
+    },
+    {
+      "type": "add",
+      "id": "2e7cd1243b425f3f",
+      "item": {
+        "type": "paragraph",
+        "id": "2e7cd1243b425f3f",
+        "text": "White means that an installation is in progress. Expect another color to appear soon."
+      },
+      "after": "c02b145f24d8fffe",
+      "date": 1489363296768
+    },
+    {
+      "type": "edit",
+      "id": "f37ab08a04582bc1",
+      "item": {
+        "type": "markdown",
+        "id": "f37ab08a04582bc1",
+        "text": "# Installation"
+      },
+      "date": 1489363306492
+    },
+    {
+      "type": "add",
+      "item": {
+        "type": "image",
+        "id": "62361581c8ce4e5e",
+        "url": "data:image/jpeg;base64,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",
+        "caption": "Uploaded image",
+        "text": "The STATUS dialog offers to install any available version other than that currently installed."
+      },
+      "after": "f37ab08a04582bc1",
+      "id": "62361581c8ce4e5e",
+      "date": 1489363947954
+    },
+    {
+      "type": "add",
+      "id": "998d3c83aa3a8106",
+      "item": {
+        "type": "paragraph",
+        "id": "998d3c83aa3a8106",
+        "text": "# Restart"
+      },
+      "after": "2e7cd1243b425f3f",
+      "date": 1489364065119
+    },
+    {
+      "type": "add",
+      "id": "35fa7eca46d6eac2",
+      "item": {
+        "type": "paragraph",
+        "id": "35fa7eca46d6eac2",
+        "text": "A Restart button appears after any version of any plugin has been installed. Changes can be viewed through the Plugmatic interface before they become available through a server restart. "
+      },
+      "after": "998d3c83aa3a8106",
+      "date": 1489364291884
+    },
+    {
+      "type": "add",
+      "id": "7ee21d036f6920e1",
+      "item": {
+        "type": "paragraph",
+        "id": "7ee21d036f6920e1",
+        "text": "The Restart button is disabled once a restart starts. It will be re enabled with any subsequent install. We don't yet have a reliable signal for when the restart completes. Any server errors encountered during restart can be cleared by refreshing the web page."
+      },
+      "after": "35fa7eca46d6eac2",
+      "date": 1489364504941
+    },
+    {
+      "type": "edit",
+      "id": "998d3c83aa3a8106",
+      "item": {
+        "type": "markdown",
+        "id": "998d3c83aa3a8106",
+        "text": "# Restart"
+      },
+      "date": 1489364509138
+    },
+    {
+      "type": "add",
+      "id": "2ac3e071bcea91dc",
+      "item": {
+        "type": "paragraph",
+        "id": "2ac3e071bcea91dc",
+        "text": "Restart requires a recently added wiki server-side feature. Use the command line npm install to update wiki before using these Plugmatic commands."
+      },
+      "after": "7ee21d036f6920e1",
+      "date": 1489364698616
+    }
+  ]
+}
