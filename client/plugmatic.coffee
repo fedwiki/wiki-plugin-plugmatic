@@ -47,7 +47,7 @@ parse = (text) ->
   result = {columns: [], plugins: []}
   lines = (text || '').split /\n+/
   for line in lines
-    result.columns.push 'status'    if line.match /\STATUS\b/
+    result.columns.push 'status'    if line.match /\bSTATUS\b/
     result.columns.push 'name'      if line.match /\bNAME\b/
     result.columns.push 'menu'      if line.match /\bMENU\b/
     result.columns.push 'pages'     if line.match /\bPAGES\b/
