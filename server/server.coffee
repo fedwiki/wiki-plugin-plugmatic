@@ -122,7 +122,7 @@ startServer = (params) ->
   app.post route('install'), admin, (req, res) ->
     pkg = "wiki-plugin-#{req.body.plugin}@#{req.body.version}"
     console.log "plugmatic installing #{pkg}"
-    exec "npm install #{pkg} --json", (err, stdout, stderr) ->
+    exec "npm install #{pkg} --json", {cwd: argv.packageDir+'/..'}, (err, stdout, stderr) ->
       try npm = JSON.parse stdout
       if err
         res.status(400).json {error: 'server unable to install plugin', npm, stderr}
