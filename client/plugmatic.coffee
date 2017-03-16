@@ -111,8 +111,11 @@ emit = ($item, item) ->
         plugins
       head = ("<td style='font-size:75%; color:gray;'>#{column}" for column in markup.columns).join "\n"
       result = (format markup, plugin, dependencies for plugin, index in inventory).join "\n"
-      "<table style=\"width:100%;\"><tr> #{head} #{result}</table>
-      <center><button class=restart>restart</button></center>"
+      "<center>
+        <p><img src='/favicon.png' width=16> <span style='color:gray;'>#{window.location.host}</span></p>
+        <table style=\"width:100%;\"><tr> #{head} #{result}</table>
+        <button class=restart>restart</button>
+      </center>"
 
     installer = (row, npm) ->
       return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
