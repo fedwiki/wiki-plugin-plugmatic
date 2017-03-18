@@ -143,10 +143,11 @@ emit = ($item, item) ->
         $row.find("[title=status]").css('color','white')
         $('.ui-dialog-content:visible').dialog('close')
 
+      array = (obj) -> if typeof obj is 'string' then [obj] else obj
       choice = (version) ->
         button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
         "<tr> <td> #{version} <td> #{if version == row.package?.version then 'installed' else button()}"
-      choices = (choice(version) for version in npm.versions.reverse())
+      choices = (choice(version) for version in array(npm.versions).reverse())
       "<h3>#{npm.description}</h3> <p>Choose a version to install.</p> <table>#{choices.join "\n"}"
 
     detail = (name, done) ->
