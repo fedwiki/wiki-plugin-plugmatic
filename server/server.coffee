@@ -51,7 +51,7 @@ startServer = (params) ->
         jsonfile.readFile path("#{file}/pages/#{slug}"), {throws:false}, (err, page) ->
           title = page.title || slug
           synopsis = page.story?[0]?.text || page.story?[1]?.text || 'empty'
-          cb2 null, {title, synopsis}
+          cb2 null, {file, slug, title, synopsis}
       fs.readdir path("#{file}/pages"), (err, slugs) ->
         async.map slugs||[], synopsis, (err, pages) ->
           site.pages = pages; cb()
@@ -73,6 +73,14 @@ startServer = (params) ->
     async.series [birth,authors,packagejson,factory,pages], (err) ->
       done null, site
 
+  plugmap = (done) ->
+    glob "wiki-plugin-*", {cwd: argv.packageDir}, (err, files) ->
+      return done(err,null) if err
+      async.map files||[], info, (err, install) ->
+        return done(err,null) if err
+        done(null, install)
+
+
   view = (plugin, done) ->
     pkg = "wiki-plugin-#{plugin}"
     exec "npm view #{pkg} --json", (err, stdout, stderr) ->
@@ -92,6 +100,27 @@ startServer = (params) ->
       admin = "none specified" unless argv.admin
       user = "not logged in" unless req.session?.passport?.user || req.session?.email || req.session?.friend
       res.status(403).send {error: 'service requires admin user', admin, user}
+
+  app.get route('page/:slug.json'), (req, res) ->
+    plugmap (err, install) ->
+      for i in install
+        for p in i.pages
+          if p.slug is req.params.slug
+            return jsonfile.readFile path("#{p.file}/pages/#{p.slug}"), {throws:false}, (err, page) ->
+              res.json page
+      res.sendStatus 404
+
+  app.get route('file/:file/slug/:slug'), (req, res) ->
+    jsonfile.readFile path("#{req.params.file}/pages/#{req.params.slug}"), {throws:false}, (err, page) ->
+      if err
+        res.sendStatus 404
+      else
+        res.json page
+
+  app.get route('sitemap.json'), (req, res) ->
+    plugmap (err, install) ->
+      # http://stackoverflow.com/a/4631593
+      res.json [].concat (i.pages for i in install)...
 
   app.get route('plugins'), (req, res) ->
     glob "wiki-plugin-*", {cwd: argv.packageDir}, (err, files) ->
