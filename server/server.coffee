@@ -1,12 +1,12 @@
 # plugmatic plugin, server-side component
-# These handlers are launched with the wiki server. 
+# These handlers are launched with the wiki server.
 
 fs = require 'fs'
 glob = require 'glob'
 async = require 'async'
 jsonfile = require 'jsonfile'
 https = require 'https'
-exec = require('child_process').exec
+execFile = require('child_process').execFile
 
 
 github = (path, done) ->
@@ -40,14 +40,14 @@ startServer = (params) ->
 
 
   info = (file, done) ->
-    plugin = file.slice 12    
+    plugin = file.slice 12
     site = {plugin}
 
     birth = (cb) ->
       fs.stat path("#{file}/client/#{plugin}.js"), (err, stat) ->
         site.birth = stat?.birthtime?.getTime(); cb()
     pages = (cb) ->
-      synopsis = (slug, cb2) -> 
+      synopsis = (slug, cb2) ->
         jsonfile.readFile path("#{file}/pages/#{slug}"), {throws:false}, (err, page) ->
           title = page.title || slug
           synopsis = page.story?[0]?.text || page.story?[1]?.text || 'empty'
@@ -82,10 +82,11 @@ startServer = (params) ->
 
 
   view = (plugin, done) ->
-    pkg = "wiki-plugin-#{plugin}"
-    exec "npm view #{pkg} --json", (err, stdout, stderr) ->
-      try npm = JSON.parse stdout
-      done null, {plugin, pkg, npm}
+    if /^\w+$/.test(plugin)
+      pkg = "wiki-plugin-#{plugin}"
+      execFile 'npm', ['view', "#{pkg}", '--json'], (err, stdout, stderr) ->
+        try npm = JSON.parse stdout
+        done null, {plugin, pkg, npm}
 
   farm = (req, res, next) ->
     if argv.f
@@ -140,24 +141,27 @@ startServer = (params) ->
     published = (cb) ->
       async.map req.body.plugins||[], view, (err, results) ->
         payload.publish = results; cb()
-    
+
     async.parallel [installed, published], (err) ->
       res.json payload
 
   app.get route('view/:pkg'), (req, res) ->
-    res.setHeader 'Content-Type', 'application/json'
-    exec("npm view wiki-plugin-#{req.params.pkg} --json").stdout.pipe(res)
+    if /^\w+$/.test(req.params.pkg)
+      pkg = "wiki-plugin-#{req.params.pkg}"
+      res.setHeader 'Content-Type', 'application/json'
+      execFile('npm', ['view', "#{pkg}", '--json']).stdout.pipe(res)
 
   app.post route('install'), admin, (req, res) ->
-    pkg = "wiki-plugin-#{req.body.plugin}@#{req.body.version}"
-    console.log "plugmatic installing #{pkg}"
-    exec "npm install #{pkg} --json", {cwd: argv.packageDir+'/..'}, (err, stdout, stderr) ->
-      try npm = JSON.parse stdout
-      if err
-        res.status(400).json {error: 'server unable to install plugin', npm, stderr}
-      else
-        info "wiki-plugin-#{req.body.plugin}", (err, row) ->
-          res.json {installed: req.body.version, npm, stderr, row}
+    if /^\w+$/.test(req.body.plugin) and /^[\w.]+$/.test(req.body.version)
+      pkg = "wiki-plugin-#{req.body.plugin}@#{req.body.version}"
+      console.log "plugmatic installing #{pkg}"
+      execFile 'npm', ['install', "#{pkg}", '--json'], {cwd: argv.packageDir+'/..'}, (err, stdout, stderr) ->
+        try npm = JSON.parse stdout
+        if err
+          res.status(400).json {error: 'server unable to install plugin', npm, stderr}
+        else
+          info "wiki-plugin-#{req.body.plugin}", (err, row) ->
+            res.json {installed: req.body.version, npm, stderr, row}
 
   app.post route('restart'), admin, (req, res) ->
     console.log 'plugmatic exit to restart'
