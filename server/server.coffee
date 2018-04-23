@@ -15,13 +15,20 @@ github = (path, done) ->
     port: 443
     method: 'GET'
     path: path
-  req = https.get options, (res) ->
-    res.setEncoding 'utf8'
-    data = ''
-    res.on 'data', (d) ->
-      data += d
-    res.on 'end', () ->
-      done data
+  try
+    req = https.get options, (res) ->
+      res.setEncoding 'utf8'
+      data = ''
+      res.on 'error', () ->
+        done "{}"
+      res.on 'timeout', () ->
+        done "{}"
+      res.on 'data', (d) ->
+        data += d
+      res.on 'end', () ->
+        done data
+  catch e
+    done "{}"
 
 # http://www.sebastianseilund.com/nodejs-async-in-practice
 
