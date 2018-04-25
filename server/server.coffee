@@ -15,13 +15,22 @@ github = (path, done) ->
     port: 443
     method: 'GET'
     path: path
-  req = https.get options, (res) ->
-    res.setEncoding 'utf8'
-    data = ''
-    res.on 'data', (d) ->
-      data += d
-    res.on 'end', () ->
-      done data
+  try
+    req = https.get options, (res) ->
+      res.setEncoding 'utf8'
+      data = ''
+      res.on 'error', () ->
+        done null
+      res.on 'timeout', () ->
+        done null
+      res.on 'data', (d) ->
+        data += d
+      res.on 'end', () ->
+        done data
+    req.on 'error', () ->
+      done null
+  catch e
+    done null
 
 # http://www.sebastianseilund.com/nodejs-async-in-practice
 
@@ -33,7 +42,7 @@ startServer = (params) ->
   github '/fedwiki/wiki/master/package.json', (data) ->
     bundle =
       date: Date.now()
-      data: JSON.parse data
+      data: JSON.parse data||'{"dependencies":{}}'
 
   route = (endpoint) -> "/plugin/plugmatic/#{endpoint}"
   path = (file) -> "#{argv.packageDir}/#{file}"
