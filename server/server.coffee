@@ -161,7 +161,7 @@ startServer = (params) ->
       execFile('npm', ['view', "#{pkg}", '--json']).stdout.pipe(res)
 
   app.post route('install'), admin, (req, res) ->
-    if /^\w+$/.test(req.body.plugin) and /^[\w.]+$/.test(req.body.version)
+    if /^\w+$/.test(req.body.plugin) and /^[\w.-]+$/.test(req.body.version)
       pkg = "wiki-plugin-#{req.body.plugin}@#{req.body.version}"
       console.log "plugmatic installing #{pkg}"
       execFile 'npm', ['install', "#{pkg}", '--json'], {cwd: argv.packageDir+'/..'}, (err, stdout, stderr) ->
