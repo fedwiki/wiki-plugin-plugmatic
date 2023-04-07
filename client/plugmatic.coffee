@@ -182,11 +182,14 @@ emit = ($item, item) ->
     normal = (e) -> $(e.currentTarget).css 'background-color', '#eee'
 
     $item.find('p').html report markup, data.install, data.bundle.data.dependencies
-    $item.find('.row').hover bright, normal
-    $item.find('p td').click (e) ->
+    $item.find('.row').on {
+      mouseenter: bright
+      mouseleave: normal
+    }
+    $item.find('p td').on 'click', (e) ->
       column = $(e.target).attr('title')
       showdetail e
-    $item.find('button.restart').hide().click (e) ->
+    $item.find('button.restart').hide().on 'click', (e) ->
       $item.find('button.restart').attr("disabled","disabled")
       $.ajax
         type: 'POST'
@@ -216,7 +219,7 @@ emit = ($item, item) ->
       error: trouble
 
 bind = ($item, item) ->
-  $item.dblclick -> wiki.textEditor $item, item
+  $item.on 'dblclick', () -> wiki.textEditor $item, item
 
 window.plugins.plugmatic = {emit, bind} if window?
 module.exports = {parse} if module?
