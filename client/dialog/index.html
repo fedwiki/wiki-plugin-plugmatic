@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Plugmatic</title>
+    <link id="favicon" href="/favicon.png" rel="icon" type="image/png" />
+    <link href="/plugins/plugmatic/dialog/style.css" rel="stylesheet" />
+    <script>
+
+      function click(event) {
+        event.stopPropagation()
+        event.preventDefault()
+
+        const keepLineup = event.shiftKey
+        const title = event.originalTarget.innerText.trim()
+
+        if (title) {
+          console.log('click', title)
+          window.opener.postMessage({ action: 'doInternalLink', keepLineup, pageKey: window.pageKey, context: window.context, title })
+        }
+      }
+
+      window.addEventListener(
+        "message",
+        (event) => {
+          console.log('data', event.data)
+          const { column, title, body, pageKey, context } = event.data
+
+          window.pageKey = pageKey
+          window.context = context
+
+          if (!title) {
+            return
+          }
+          document.title = title
+          document.querySelector('.page').innerHTML = body
+          if (column == 'pages') {
+            document.querySelectorAll('a').forEach((e) => e.addEventListener('click', click))
+          }
+        }
+      )
+    </script>
+  </head>
+  <body>
+    <div class="page">
+    </div>
+  </body>
+</html>

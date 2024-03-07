@@ -1,0 +1,22 @@
+body {
+  inset: 0;
+  position: absolute;
+  background: #eee url('/images/crosses.png');
+  padding: 0;
+  margin: 0;
+  line-height: 1.3;
+  color: #333;
+}
+.page {
+  margin: 8px;
+  outline: none;
+  box-shadow: 2px 1px 4px rgba(0,0,0,0.2);
+  background: #eee;
+  padding: 8px;
+  position: absolute;
+  inset: 0px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #eee;
+}
