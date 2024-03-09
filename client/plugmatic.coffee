@@ -66,6 +66,7 @@ parse = (text) ->
 
 emit = ($item, item) ->
   markup = parse item.text
+  dialog = null
   $item.append """
     <p style="background-color:#eee;padding:15px;">
       loading plugin details
@@ -141,7 +142,7 @@ emit = ($item, item) ->
           error: trouble
         # http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
         $row.find("[title=status]").css('color','white')
-        $('.ui-dialog-content:visible').dialog('close')
+        dialog.close()
 
       array = (obj) -> if typeof obj is 'string' then [obj] else obj
       choice = (version) ->
@@ -172,7 +173,28 @@ emit = ($item, item) ->
       $parent = $(e.target).parent()
       name = $parent.data('name')
       detail name, (html) ->
-        wiki.dialog "#{name} plugin #{column}", html || ''
+        console.log(column, name, $item, item)
+        if column is 'status'
+          # show dialog
+          $item.remove('dialog')
+          $item.append """
+            <dialog>
+              #{html}
+            </dialog>
+          """
+          dialog = $item.find('dialog')[0]
+          console.log('dialog', dialog)
+          dialog.showModal()
+        else  
+          # wiki.dialog "#{name} plugin #{column}", html || ''
+          pageKey = $item.parents('.page').data('key')
+          context = wiki.lineup.atKey(pageKey).getContext()
+          plugmaticDialog = window.open('/plugins/plugmatic/dialog/#', 'plugmatic', 'popup,height=600,width=800')
+          if plugmaticDialog.location.pathname isnt '/plugins/plugmatic/dialog/'
+            plugmaticDialog.addEventListener('load', (event) ->
+              plugmaticDialog.postMessage({ column, title: "#{name} plugin #{column}", body: html || '', pageKey, context }, window.origin))
+          else
+            plugmaticDialog.postMessage({ column, title: "#{name} plugin #{column}", body: html || '', pageKey, context }, window.origin)
 
     more = (e) ->
      if e.shiftKey
@@ -220,6 +242,35 @@ emit = ($item, item) ->
 
 bind = ($item, item) ->
   $item.on 'dblclick', () -> wiki.textEditor $item, item
+
+plugmaticListener = (event) ->
+  if not event.source.opener or event.source.location.pathname isnt '/plugins/plugmatic/dialog/'
+    return
+  console.log('plugmatic listerner', event)
+
+  { data } = event
+
+  action = data.action
+
+  switch action
+    when 'doInternalLink'
+      { keepLineup = false, pageKey=null, title=null, context=null } = data
+      $page = null
+      if pageKey isnt null
+        $page = if keepLineup then null else $('.page').filter((i,el) -> $(el).data('key') is pageKey )
+      wiki.pageHandler.context = context
+      wiki.doInternalLink(title, $page)
+      break
+    else
+      console.error({ where: 'plugmaticListener', message: "unknown action", data })
+
+
+
+if window?
+  if typeof window.plugmaticListener == 'undefined' or window.plugmaticListener == null
+    console.log('*** Plugmatic - Adding Message Listener')
+    window.plugmaticListener = plugmaticListener
+    window.addEventListener("message", plugmaticListener)
 
 window.plugins.plugmatic = {emit, bind} if window?
 module.exports = {parse} if module?
