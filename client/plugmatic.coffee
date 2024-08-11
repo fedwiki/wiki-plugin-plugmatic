@@ -176,7 +176,7 @@ emit = ($item, item) ->
         console.log(column, name, $item, item)
         if column is 'status'
           # show dialog
-          $item.remove('dialog')
+          $item.find('dialog').remove()
           $item.append """
             <dialog>
               #{html}
