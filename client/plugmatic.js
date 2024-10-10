@@ -1,6 +1,6 @@
 /*
  * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
+
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS201: Simplify complex destructure assignments
@@ -59,7 +59,7 @@ const expand = function(string) {
 const parse = function(text) {
   const result = {columns: [], plugins: []};
   const lines = (text || '').split(/\n+/);
-  for (var line of Array.from(lines)) {
+  for (var line of lines) {
     var m;
     if (line.match(/\bSTATUS\b/)) { result.columns.push('status'); }
     if (line.match(/\bNAME\b/)) { result.columns.push('name'); }
@@ -108,7 +108,7 @@ const emit = function($item, item) {
       };
 
       const result = [`<tr class=row data-name=${plugin.plugin}>`];
-      for (column of Array.from(markup.columns)) {
+      for (column of markup.columns) {
         result.push((() => { switch (column) {
           case 'status':    return `<td title=status style='text-align:center; color: ${status()}'>◉`;
           case 'name':      return `<td title=name> ${name}`;
@@ -118,7 +118,7 @@ const emit = function($item, item) {
           case 'bundled':   return `<td title=bundled> ${dependencies['wiki-plugin-'+name] || ''}`;
           case 'installed': return `<td title=installed> ${(plugin.package != null ? plugin.package.version : undefined) || ''}`;
           case 'published': return `<td title=published> ${__guard__(pub(name).npm, x => x.version) || ''}`;
-        
+
         } })());
       }
       return result.join("\n");
@@ -127,7 +127,7 @@ const emit = function($item, item) {
     const report = function(markup, plugins, dependencies) {
       let plugin;
       const retrieve = function(name) {
-        for (plugin of Array.from(plugins)) {
+        for (plugin of plugins) {
           if (plugin.plugin === name) { return plugin; }
         }
         return {plugin: name};
@@ -138,7 +138,7 @@ const emit = function($item, item) {
         plugins;
       const head = ((() => {
         const result1 = [];
-        for (column of Array.from(markup.columns)) {           result1.push(`<td style='font-size:75%; color:gray;'>${column}`);
+        for (column of markup.columns) {           result1.push(`<td style='font-size:75%; color:gray;'>${column}`);
         }
         return result1;
       })()).join("\n");
@@ -194,7 +194,7 @@ const emit = function($item, item) {
       };
       const choices = ((() => {
         const result = [];
-        for (version of Array.from(array(npm.versions).reverse())) {           result.push(choice(version));
+        for (version of array(npm.versions).reverse()) {           result.push(choice(version));
         }
         return result;
       })());
@@ -238,7 +238,7 @@ const emit = function($item, item) {
           dialog = $item.find('dialog')[0];
           console.log('dialog', dialog);
           return dialog.showModal();
-        } else {  
+        } else {
           // wiki.dialog "#{name} plugin #{column}", html || ''
           const pageKey = $item.parents('.page').data('key');
           const context = wiki.lineup.atKey(pageKey).getContext();
