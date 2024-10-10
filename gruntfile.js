@@ -12,7 +12,7 @@ module.exports = function (grunt) {
           transpile: { presets: ['@babel/preset-env'] },
           sourceMap: true
         },
-        src: ['client/*.coffee', 'test/*.coffee', 'server/*.coffee'],
+        src: ['test/*.coffee', 'server/*.coffee'],
         ext: '.js'
       }
     },
