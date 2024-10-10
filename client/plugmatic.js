@@ -1,277 +1,360 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
+ * DS201: Simplify complex destructure assignments
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 
-any = (array) ->
-  array[Math.floor Math.random()*array.length]
+const any = array => array[Math.floor(Math.random()*array.length)];
 
-traffic = (installed, published) ->
-  color =
-    gray:   '#ccc'
-    red:    '#f55'
-    yellow: '#fb0'
+const traffic = function(installed, published) {
+  const color = {
+    gray:   '#ccc',
+    red:    '#f55',
+    yellow: '#fb0',
     green:  '#0e0'
+  };
 
-  if installed? and published?
-    if installed == published
-      color.green
-    else
-      color.yellow
-  else
-    if published?
-      color.red
-    else
-      color.gray
-
-escape = (text) ->
-  text
-    .replace /&/g, '&amp;'
-    .replace /</g, '&lt;'
-    .replace />/g, '&gt;'
-
-expand = (string) ->
-  stashed = []
-  stash = (text) ->
-    here = stashed.length
-    stashed.push text
-    "〖#{here}〗"
-  unstash = (match, digits) ->
-    stashed[+digits]
-  external = (match, href, protocol) ->
-    stash """\"<a class="external" target="_blank" href="#{href}" title="#{href}" rel="nofollow">#{escape href}</a>\""""
-  string = string
-    .replace /〖(\d+)〗/g, "〖 $1 〗"
-    .replace /"((http|https|ftp):.*?)"/gi, external
-  escape string
-    .replace /〖(\d+)〗/g, unstash
-
-
-parse = (text) ->
-  result = {columns: [], plugins: []}
-  lines = (text || '').split /\n+/
-  for line in lines
-    result.columns.push 'status'    if line.match /\bSTATUS\b/
-    result.columns.push 'name'      if line.match /\bNAME\b/
-    result.columns.push 'menu'      if line.match /\bMENU\b/
-    result.columns.push 'pages'     if line.match /\bPAGES\b/
-    result.columns.push 'service'   if line.match /\bSERVICE\b/
-    result.columns.push 'bundled'   if line.match /\bBUNDLED\b/
-    result.columns.push 'installed' if line.match /\bINSTALLED\b/
-    result.columns.push 'published' if line.match /\bPUBLISHED\b/
-    result.plugins.push m[1]        if m = line.match /^wiki-plugin-(\w+)$/
-  if result.columns.length == 0
-    result.columns = if result.plugins.length == 0
-      ['name', 'pages', 'menu', 'bundled', 'installed']
-    else
-      ['status', 'name', 'pages', 'bundled', 'installed', 'published']
-  result
-
-
-emit = ($item, item) ->
-  markup = parse item.text
-  dialog = null
-  $item.append """
-    <p style="background-color:#eee;padding:15px;">
-      loading plugin details
-    </p>
-  """
-
-  render = (data) ->
-    column = 'installed'
-    pub = (name) -> data.publish.find (obj) -> obj.plugin == name
-
-    format = (markup, plugin, dependencies) ->
-      name = plugin.plugin
-      months = if plugin.birth
-        ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
-      else
-        ''
-      status = ->
-        installed = plugin.package?.version
-        published = pub(name).npm?.version
-        traffic installed, published
-
-      result = ["<tr class=row data-name=#{plugin.plugin}>"]
-      for column in markup.columns
-        result.push switch column
-          when 'status'    then "<td title=status style='text-align:center; color: #{status()}'>◉"
-          when 'name'      then "<td title=name> #{name}"
-          when 'menu'      then "<td title=menu> #{plugin.factory?.category || ''}"
-          when 'pages'     then "<td title=pages style='text-align:center;'>#{plugin.pages?.length || ''}"
-          when 'service'   then "<td title=service style='text-align:center;'>#{months}"
-          when 'bundled'   then "<td title=bundled> #{dependencies['wiki-plugin-'+name] || ''}"
-          when 'installed' then "<td title=installed> #{plugin.package?.version || ''}"
-          when 'published' then "<td title=published> #{pub(name).npm?.version || ''}"
-      result.join "\n"
-
-    report = (markup, plugins, dependencies) ->
-      retrieve = (name) ->
-        for plugin in plugins
-          return plugin if plugin.plugin == name
-        {plugin: name}
-      inventory = if markup.plugins.length > 0
-        markup.plugins.map retrieve
-      else
-        plugins
-      head = ("<td style='font-size:75%; color:gray;'>#{column}" for column in markup.columns).join "\n"
-      result = (format markup, plugin, dependencies for plugin, index in inventory).join "\n"
-      "<center>
-        <p><img src='/favicon.png' width=16> <span style='color:gray;'>#{window.location.host}</span></p>
-        <table style=\"width:100%;\"><tr> #{head} #{result}</table>
-        <button class=restart>restart</button>
-      </center>"
-
-    installer = (row, npm) ->
-      return "<p>can't find wiki-plugin-#{row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>" unless npm?
-      $row = $item.find "table [data-name=#{row.plugin}]"
-      installed = (update) ->
-        index = data.install.indexOf row
-        data.install[index] = row = update.row
-        $row.find("[title=status]").css('color',traffic(update.installed, npm.version))
-        $row.find("[title=menu]").text(row.factory?.category || '')
-        $row.find("[title=pages]").text(row.pages?.length || '')
-        $row.find('[title=service]').text('0')
-        $row.find("[title=installed]").text(row.package?.version || '')
-        $item.find('button.restart').removeAttr('disabled').show()
-
-      window.plugins.plugmatic.install = (version) ->
-        $.ajax
-          type: 'POST'
-          url: '/plugin/plugmatic/install'
-          data: JSON.stringify({version, plugin: row.plugin})
-          contentType: "application/json; charset=utf-8"
-          dataType: 'json'
-          success: installed
-          error: trouble
-        # http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
-        $row.find("[title=status]").css('color','white')
-        dialog.close()
-
-      array = (obj) -> if typeof obj is 'string' then [obj] else obj
-      choice = (version) ->
-        button = () -> "<button onclick=window.plugins.plugmatic.install('#{version}')> install </button>"
-        "<tr> <td> #{version} <td> #{if version == row.package?.version then 'installed' else button()}"
-      choices = (choice(version) for version in array(npm.versions).reverse())
-      "<h3>#{npm.description}</h3> <p>Choose a version to install.</p> <table>#{choices.join "\n"}"
-
-    detail = (name, done) ->
-      row = data.install.find (obj) -> obj.plugin == name
-      text = (obj) -> return '' unless obj; (expand obj).replace(/\n/g,'<br>')
-      struct = (obj) -> return '' unless obj; "<pre>#{expand JSON.stringify obj, null, '  '}</pre>"
-      pages = (obj) -> "<p><b><a href=#>#{obj.title}</a></b><br>#{obj.synopsis}</p>"
-      birth = (obj) -> if obj then (new Date obj).toString() else 'built-in'
-      npmjs = (more) -> $.getJSON "/plugin/plugmatic/view/#{name}", more
-      switch column
-        when 'status' then npmjs (npm) -> done installer row, npm
-        when 'name' then done text row.authors
-        when 'menu' then done struct row.factory
-        when 'pages' then done row.pages.map(pages).join('')
-        when 'service' then done birth row.birth
-        when 'bundled' then done struct data.bundle.data.dependencies
-        when 'installed' then done struct row.package
-        when 'published' then done struct pub(name).npm || ''
-        else done 'unexpected column'
-
-    showdetail = (e) ->
-      $parent = $(e.target).parent()
-      name = $parent.data('name')
-      detail name, (html) ->
-        console.log(column, name, $item, item)
-        if column is 'status'
-          # show dialog
-          $item.find('dialog').remove()
-          $item.append """
-            <dialog>
-              #{html}
-            </dialog>
-          """
-          dialog = $item.find('dialog')[0]
-          console.log('dialog', dialog)
-          dialog.showModal()
-        else  
-          # wiki.dialog "#{name} plugin #{column}", html || ''
-          pageKey = $item.parents('.page').data('key')
-          context = wiki.lineup.atKey(pageKey).getContext()
-          plugmaticDialog = window.open('/plugins/plugmatic/dialog/#', 'plugmatic', 'popup,height=600,width=800')
-          if plugmaticDialog.location.pathname isnt '/plugins/plugmatic/dialog/'
-            plugmaticDialog.addEventListener('load', (event) ->
-              plugmaticDialog.postMessage({ column, title: "#{name} plugin #{column}", body: html || '', pageKey, context }, window.origin))
-          else
-            plugmaticDialog.postMessage({ column, title: "#{name} plugin #{column}", body: html || '', pageKey, context }, window.origin)
-
-    more = (e) ->
-     if e.shiftKey
-       showdetail e
-
-    bright = (e) -> more(e); $(e.currentTarget).css 'background-color', '#f8f8f8'
-    normal = (e) -> $(e.currentTarget).css 'background-color', '#eee'
-
-    $item.find('p').html report markup, data.install, data.bundle.data.dependencies
-    $item.find('.row').on {
-      mouseenter: bright
-      mouseleave: normal
+  if ((installed != null) && (published != null)) {
+    if (installed === published) {
+      return color.green;
+    } else {
+      return color.yellow;
     }
-    $item.find('p td').on 'click', (e) ->
-      column = $(e.target).attr('title')
-      showdetail e
-    $item.find('button.restart').hide().on 'click', (e) ->
-      $item.find('button.restart').attr("disabled","disabled")
-      $.ajax
-        type: 'POST'
-        url: '/plugin/plugmatic/restart'
-        success: ->
-          # poll for restart complete, then ...
-          # $item.find('button.restart').hide()
+  } else {
+    if (published != null) {
+      return color.red;
+    } else {
+      return color.gray;
+    }
+  }
+};
+
+const escape = text => text
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
+
+const expand = function(string) {
+  const stashed = [];
+  const stash = function(text) {
+    const here = stashed.length;
+    stashed.push(text);
+    return `〖${here}〗`;
+  };
+  const unstash = (match, digits) => stashed[+digits];
+  const external = (match, href, protocol) => stash(`\"<a class="external" target="_blank" href="${href}" title="${href}" rel="nofollow">${escape(href)}</a>\"`);
+  string = string
+    .replace(/〖(\d+)〗/g, "〖 $1 〗")
+    .replace(/"((http|https|ftp):.*?)"/gi, external);
+  return escape(string)
+    .replace(/〖(\d+)〗/g, unstash);
+};
+
+
+const parse = function(text) {
+  const result = {columns: [], plugins: []};
+  const lines = (text || '').split(/\n+/);
+  for (var line of Array.from(lines)) {
+    var m;
+    if (line.match(/\bSTATUS\b/)) { result.columns.push('status'); }
+    if (line.match(/\bNAME\b/)) { result.columns.push('name'); }
+    if (line.match(/\bMENU\b/)) { result.columns.push('menu'); }
+    if (line.match(/\bPAGES\b/)) { result.columns.push('pages'); }
+    if (line.match(/\bSERVICE\b/)) { result.columns.push('service'); }
+    if (line.match(/\bBUNDLED\b/)) { result.columns.push('bundled'); }
+    if (line.match(/\bINSTALLED\b/)) { result.columns.push('installed'); }
+    if (line.match(/\bPUBLISHED\b/)) { result.columns.push('published'); }
+    if (m = line.match(/^wiki-plugin-(\w+)$/)) { result.plugins.push(m[1]); }
+  }
+  if (result.columns.length === 0) {
+    result.columns = result.plugins.length === 0 ?
+      ['name', 'pages', 'menu', 'bundled', 'installed']
+    :
+      ['status', 'name', 'pages', 'bundled', 'installed', 'published'];
+  }
+  return result;
+};
+
+
+const emit = function($item, item) {
+  const markup = parse(item.text);
+  let dialog = null;
+  $item.append(`\
+<p style="background-color:#eee;padding:15px;">
+  loading plugin details
+</p>\
+`
+  );
+
+  const render = function(data) {
+    let column = 'installed';
+    const pub = name => data.publish.find(obj => obj.plugin === name);
+
+    const format = function(markup, plugin, dependencies) {
+      const name = plugin.plugin;
+      const months = plugin.birth ?
+        ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5 ).toFixed(0)
+      :
+        '';
+      const status = function() {
+        const installed = plugin.package != null ? plugin.package.version : undefined;
+        const published = __guard__(pub(name).npm, x => x.version);
+        return traffic(installed, published);
+      };
+
+      const result = [`<tr class=row data-name=${plugin.plugin}>`];
+      for (column of Array.from(markup.columns)) {
+        result.push((() => { switch (column) {
+          case 'status':    return `<td title=status style='text-align:center; color: ${status()}'>◉`;
+          case 'name':      return `<td title=name> ${name}`;
+          case 'menu':      return `<td title=menu> ${(plugin.factory != null ? plugin.factory.category : undefined) || ''}`;
+          case 'pages':     return `<td title=pages style='text-align:center;'>${(plugin.pages != null ? plugin.pages.length : undefined) || ''}`;
+          case 'service':   return `<td title=service style='text-align:center;'>${months}`;
+          case 'bundled':   return `<td title=bundled> ${dependencies['wiki-plugin-'+name] || ''}`;
+          case 'installed': return `<td title=installed> ${(plugin.package != null ? plugin.package.version : undefined) || ''}`;
+          case 'published': return `<td title=published> ${__guard__(pub(name).npm, x => x.version) || ''}`;
+        
+        } })());
+      }
+      return result.join("\n");
+    };
+
+    const report = function(markup, plugins, dependencies) {
+      let plugin;
+      const retrieve = function(name) {
+        for (plugin of Array.from(plugins)) {
+          if (plugin.plugin === name) { return plugin; }
+        }
+        return {plugin: name};
+      };
+      const inventory = markup.plugins.length > 0 ?
+        markup.plugins.map(retrieve)
+      :
+        plugins;
+      const head = ((() => {
+        const result1 = [];
+        for (column of Array.from(markup.columns)) {           result1.push(`<td style='font-size:75%; color:gray;'>${column}`);
+        }
+        return result1;
+      })()).join("\n");
+      const result = ((() => {
+        const result2 = [];
+        for (let index = 0; index < inventory.length; index++) {
+          plugin = inventory[index];
+          result2.push(format(markup, plugin, dependencies));
+        }
+        return result2;
+      })()).join("\n");
+      return `<center> \
+<p><img src='/favicon.png' width=16> <span style='color:gray;'>${window.location.host}</span></p> \
+<table style=\"width:100%;\"><tr> ${head} ${result}</table> \
+<button class=restart>restart</button> \
+</center>`;
+    };
+
+    const installer = function(row, npm) {
+      let version;
+      if (npm == null) { return `<p>can't find wiki-plugin-${row.plugin} in <a href=//npmjs.com target=_blank>npmjs.com</a></p>`; }
+      const $row = $item.find(`table [data-name=${row.plugin}]`);
+      const installed = function(update) {
+        const index = data.install.indexOf(row);
+        data.install[index] = (row = update.row);
+        $row.find("[title=status]").css('color',traffic(update.installed, npm.version));
+        $row.find("[title=menu]").text((row.factory != null ? row.factory.category : undefined) || '');
+        $row.find("[title=pages]").text((row.pages != null ? row.pages.length : undefined) || '');
+        $row.find('[title=service]').text('0');
+        $row.find("[title=installed]").text((row.package != null ? row.package.version : undefined) || '');
+        return $item.find('button.restart').removeAttr('disabled').show();
+      };
+
+      window.plugins.plugmatic.install = function(version) {
+        $.ajax({
+          type: 'POST',
+          url: '/plugin/plugmatic/install',
+          data: JSON.stringify({version, plugin: row.plugin}),
+          contentType: "application/json; charset=utf-8",
+          dataType: 'json',
+          success: installed,
+          error: trouble
+        });
+        // http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
+        $row.find("[title=status]").css('color','white');
+        return dialog.close();
+      };
+
+      const array = function(obj) { if (typeof obj === 'string') { return [obj]; } else { return obj; } };
+      const choice = function(version) {
+        const button = () => `<button onclick=window.plugins.plugmatic.install('${version}')> install </button>`;
+        return `<tr> <td> ${version} <td> ${version === (row.package != null ? row.package.version : undefined) ? 'installed' : button()}`;
+      };
+      const choices = ((() => {
+        const result = [];
+        for (version of Array.from(array(npm.versions).reverse())) {           result.push(choice(version));
+        }
+        return result;
+      })());
+      return `<h3>${npm.description}</h3> <p>Choose a version to install.</p> <table>${choices.join("\n")}`;
+    };
+
+    const detail = function(name, done) {
+      const row = data.install.find(obj => obj.plugin === name);
+      const text = function(obj) { if (!obj) { return ''; } return (expand(obj)).replace(/\n/g,'<br>'); };
+      const struct = function(obj) { if (!obj) { return ''; } return `<pre>${expand(JSON.stringify(obj, null, '  '))}</pre>`; };
+      const pages = obj => `<p><b><a href=#>${obj.title}</a></b><br>${obj.synopsis}</p>`;
+      const birth = function(obj) { if (obj) { return (new Date(obj)).toString(); } else { return 'built-in'; } };
+      const npmjs = more => $.getJSON(`/plugin/plugmatic/view/${name}`, more);
+      switch (column) {
+        case 'status': return npmjs(npm => done(installer(row, npm)));
+        case 'name': return done(text(row.authors));
+        case 'menu': return done(struct(row.factory));
+        case 'pages': return done(row.pages.map(pages).join(''));
+        case 'service': return done(birth(row.birth));
+        case 'bundled': return done(struct(data.bundle.data.dependencies));
+        case 'installed': return done(struct(row.package));
+        case 'published': return done(struct(pub(name).npm || ''));
+        default: return done('unexpected column');
+      }
+    };
+
+    const showdetail = function(e) {
+      const $parent = $(e.target).parent();
+      const name = $parent.data('name');
+      return detail(name, function(html) {
+        console.log(column, name, $item, item);
+        if (column === 'status') {
+          // show dialog
+          $item.find('dialog').remove();
+          $item.append(`\
+<dialog>
+  ${html}
+</dialog>\
+`
+          );
+          dialog = $item.find('dialog')[0];
+          console.log('dialog', dialog);
+          return dialog.showModal();
+        } else {  
+          // wiki.dialog "#{name} plugin #{column}", html || ''
+          const pageKey = $item.parents('.page').data('key');
+          const context = wiki.lineup.atKey(pageKey).getContext();
+          const plugmaticDialog = window.open('/plugins/plugmatic/dialog/#', 'plugmatic', 'popup,height=600,width=800');
+          if (plugmaticDialog.location.pathname !== '/plugins/plugmatic/dialog/') {
+            return plugmaticDialog.addEventListener('load', event => plugmaticDialog.postMessage({ column, title: `${name} plugin ${column}`, body: html || '', pageKey, context }, window.origin));
+          } else {
+            return plugmaticDialog.postMessage({ column, title: `${name} plugin ${column}`, body: html || '', pageKey, context }, window.origin);
+          }
+        }
+      });
+    };
+
+    const more = function(e) {
+     if (e.shiftKey) {
+       return showdetail(e);
+     }
+   };
+
+    const bright = function(e) { more(e); return $(e.currentTarget).css('background-color', '#f8f8f8'); };
+    const normal = e => $(e.currentTarget).css('background-color', '#eee');
+
+    $item.find('p').html(report(markup, data.install, data.bundle.data.dependencies));
+    $item.find('.row').on({
+      mouseenter: bright,
+      mouseleave: normal
+    });
+    $item.find('p td').on('click', function(e) {
+      column = $(e.target).attr('title');
+      return showdetail(e);
+    });
+    return $item.find('button.restart').hide().on('click', function(e) {
+      $item.find('button.restart').attr("disabled","disabled");
+      return $.ajax({
+        type: 'POST',
+        url: '/plugin/plugmatic/restart',
+        success() {},
+          // poll for restart complete, then ...
+          // $item.find('button.restart').hide()
         error: trouble
+      });
+    });
+  };
 
-  trouble = (xhr) -> 
-    $item.find('p').html xhr.responseJSON?.error || 'server error'
+  var trouble = xhr => $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error');
 
-  if markup.plugins.length
-    $.ajax
-      type: 'POST'
-      url: '/plugin/plugmatic/plugins'
-      data: JSON.stringify(markup)
-      contentType: "application/json; charset=utf-8"
-      dataType: 'json'
-      success: render
+  if (markup.plugins.length) {
+    return $.ajax({
+      type: 'POST',
+      url: '/plugin/plugmatic/plugins',
+      data: JSON.stringify(markup),
+      contentType: "application/json; charset=utf-8",
+      dataType: 'json',
+      success: render,
       error: trouble
-  else
-    $.ajax
-      url: '/plugin/plugmatic/plugins'
-      dataType: 'json'
-      success: render
+    });
+  } else {
+    return $.ajax({
+      url: '/plugin/plugmatic/plugins',
+      dataType: 'json',
+      success: render,
       error: trouble
+    });
+  }
+};
 
-bind = ($item, item) ->
-  $item.on 'dblclick', () -> wiki.textEditor $item, item
+const bind = ($item, item) => $item.on('dblclick', () => wiki.textEditor($item, item));
 
-plugmaticListener = (event) ->
-  if not event.source.opener or event.source.location.pathname isnt '/plugins/plugmatic/dialog/'
-    return
-  console.log('plugmatic listerner', event)
+const plugmaticListener = function(event) {
+  if (!event.source.opener || (event.source.location.pathname !== '/plugins/plugmatic/dialog/')) {
+    return;
+  }
+  console.log('plugmatic listerner', event);
 
-  { data } = event
+  const { data } = event;
 
-  action = data.action
+  const {
+    action
+  } = data;
 
-  switch action
-    when 'doInternalLink'
-      { keepLineup = false, pageKey=null, title=null, context=null } = data
-      $page = null
-      if pageKey isnt null
-        $page = if keepLineup then null else $('.page').filter((i,el) -> $(el).data('key') is pageKey )
-      wiki.pageHandler.context = context
-      wiki.doInternalLink(title, $page)
-      break
-    else
-      console.error({ where: 'plugmaticListener', message: "unknown action", data })
+  switch (action) {
+    case 'doInternalLink':
+      var val = data.keepLineup,
+        keepLineup = val != null ? val : false,
+        val1 = data.pageKey,
+        pageKey = val1 != null ? val1 : null,
+        val2 = data.title,
+        title = val2 != null ? val2 : null,
+        val3 = data.context,
+        context = val3 != null ? val3 : null;
+      var $page = null;
+      if (pageKey !== null) {
+        $page = keepLineup ? null : $('.page').filter((i, el) => $(el).data('key') === pageKey);
+      }
+      wiki.pageHandler.context = context;
+      wiki.doInternalLink(title, $page);
+      break;
+    default:
+      return console.error({ where: 'plugmaticListener', message: "unknown action", data });
+  }
+};
 
 
 
-if window?
-  if typeof window.plugmaticListener == 'undefined' or window.plugmaticListener == null
-    console.log('*** Plugmatic - Adding Message Listener')
-    window.plugmaticListener = plugmaticListener
-    window.addEventListener("message", plugmaticListener)
+if (typeof window !== 'undefined' && window !== null) {
+  if ((typeof window.plugmaticListener === 'undefined') || (window.plugmaticListener === null)) {
+    console.log('*** Plugmatic - Adding Message Listener');
+    window.plugmaticListener = plugmaticListener;
+    window.addEventListener("message", plugmaticListener);
+  }
+}
 
-window.plugins.plugmatic = {emit, bind} if window?
-module.exports = {parse} if module?
+if (typeof window !== 'undefined' && window !== null) { window.plugins.plugmatic = {emit, bind}; }
+if (typeof module !== 'undefined' && module !== null) { module.exports = {parse}; }
 
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
