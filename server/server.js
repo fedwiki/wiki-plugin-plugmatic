@@ -122,7 +122,7 @@ const startServer = function (params) {
         let npm
         try {
           npm = JSON.parse(stdout)
-        } // no parsing error handler provided
+        } catch (error) {}
         return done(null, { plugin, pkg, npm })
       })
     }
@@ -239,8 +239,7 @@ const startServer = function (params) {
           let npm
           try {
             npm = JSON.parse(stdout)
-          } // no parsing error handler provided
-
+          } catch (error) {}
           if (err) {
             return res.status(400).json({ error: 'server unable to install plugin', npm, stderr })
           } else {
