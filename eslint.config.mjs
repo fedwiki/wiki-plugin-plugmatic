@@ -13,6 +13,9 @@ export default [
     languageOptions: {
       globals: {
         wiki: 'readonly',
+        require: 'readonly',
+        module: 'readonly',
+        process: 'readonly',
         ...globals.browser,
         ...globals.jquery,
         ...globals.mocha,
