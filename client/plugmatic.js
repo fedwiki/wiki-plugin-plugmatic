@@ -42,9 +42,20 @@ const expand = function (string) {
     return `〖${here}〗`
   }
   const unstash = (match, digits) => stashed[+digits]
+  const internal = function (match, name) {
+    const slug = wiki.asSlug(name)
+    const styling = name === name.trim() ? 'internal' : 'internal spaced'
+    if (slug.length) {
+      return stash(
+        `<a class="${styling}" href="/${slug}.html" data-page-name="${slug}" title="view">${escape(name)}</a>`,
+      )
+    } else {
+      return match
+    }
+  }
   const external = (match, href, protocol) =>
-    stash(`\"<a class="external" target="_blank" href="${href}" title="${href}" rel="nofollow">${escape(href)}</a>\"`)
-  string = string.replace(/〖(\d+)〗/g, '〖 $1 〗').replace(/"((http|https|ftp):.*?)"/gi, external)
+    stash(`"<a class="external" target="_blank" href="${href}" title="${href}" rel="nofollow">${escape(href)}</a>"`)
+  string = string.replace(/〖(\d+)〗/g, '〖 $1 〗').replace(/\[\[([^\]]+)\]\]/gi, internal).replace(/"((http|https|ftp):.*?)"/gi, external)
   return escape(string).replace(/〖(\d+)〗/g, unstash)
 }
 
@@ -167,8 +178,8 @@ const emit = function ($item, item) {
         return result2
       })().join('\n')
       return `<center> \
-<p><img src='/favicon.png' width=16> <span style='color:gray;'>${window.location.host}</span></p> \
-<table style=\"width:100%;\"><tr> ${head} ${result}</table> \
+<p><img src="/favicon.png" width=16> <span style="color:gray;">${window.location.host}</span></p> \
+<table style="width:100%;"><tr> ${head} ${result}</table> \
 <button class=restart>restart</button> \
 </center>`
     }
@@ -240,7 +251,7 @@ const emit = function ($item, item) {
         }
         return `<pre>${expand(JSON.stringify(obj, null, '  '))}</pre>`
       }
-      const pages = obj => `<p><b><a href=#>${obj.title}</a></b><br>${obj.synopsis}</p>`
+      const pages = obj => `<p><b><a href=#>${obj.title}</a></b><br>${expand(obj.synopsis)}</p>`
       const birth = function (obj) {
         if (obj) {
           return new Date(obj).toString()
