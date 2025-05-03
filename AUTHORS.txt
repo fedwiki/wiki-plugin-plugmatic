@@ -1,0 +1,6 @@
+Authors ordered by first contribution
+
+Ward Cunningham <ward@c2.com>
+Paul Rodwell <paul.rodwell@btinternet.com>
+decaffeinate <paul.rodwell@btinternet.com>
+Nick Niemeir <nick.niemeir@gmail.com>
