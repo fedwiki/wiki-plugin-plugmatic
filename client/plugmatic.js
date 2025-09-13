@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
 
  * DS102: Remove unnecessary code created because of implicit returns
- * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS201: Simplify complex destructure assignments
  * DS205: Consider reworking code to avoid use of IIFEs
  * DS207: Consider shorter variations of null checks
@@ -119,7 +118,7 @@ const emit = function ($item, item) {
       const months = plugin.birth ? ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5).toFixed(0) : ''
       const status = function () {
         const installed = plugin.package != null ? plugin.package.version : undefined
-        const published = __guard__(pub(name).npm, x => x.version)
+        const published = pub(name).npm?.version
         return traffic(installed, published)
       }
 
@@ -143,7 +142,7 @@ const emit = function ($item, item) {
               case 'installed':
                 return `<td title=installed> ${(plugin.package != null ? plugin.package.version : undefined) || ''}`
               case 'published':
-                return `<td title=published> ${__guard__(pub(name).npm, x => x.version) || ''}`
+                return `<td title=published> ${pub(name).npm?.version || ''}`
             }
           })(),
         )
@@ -427,8 +426,4 @@ if (typeof window !== 'undefined' && window !== null) {
 }
 if (typeof module !== 'undefined' && module !== null) {
   module.exports = { parse }
-}
-
-function __guard__(value, transform) {
-  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined
 }
