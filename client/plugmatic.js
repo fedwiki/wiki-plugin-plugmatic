@@ -9,9 +9,10 @@
  */
 
 import {render} from './render.js'
+import {browse} from './browse.js'
 
 const parse = function (text) {
-  const result = { columns: [], plugins: [] }
+  const result = { columns: [], plugins: [], features: [] }
   const lines = (text || '').split(/\n+/)
   for (var line of lines) {
     var m
@@ -39,6 +40,11 @@ const parse = function (text) {
     if (line.match(/\bPUBLISHED\b/)) {
       result.columns.push('published')
     }
+
+    if (line.match(/\bBROWSE\b/)) {
+      result.features.push('browse')
+    }
+
     if ((m = line.match(/^wiki-plugin-(\w+)$/))) {
       result.plugins.push(m[1])
     }
@@ -63,8 +69,12 @@ const emit = function ($item, item) {
   var trouble = xhr =>
     $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error')
 
-  const renderproxy = data =>
-    render(data,$item,markup,trouble)
+  const renderproxy = data => {
+    if(markup.features.includes('browse'))
+      browse(data,$item)
+    else
+      render(data,$item,markup,trouble)
+  }
 
   if (markup.plugins.length) {
     return $.ajax({
