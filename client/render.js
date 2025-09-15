@@ -52,9 +52,11 @@ const traffic = function (installed, published) {
 
 var dialog
 
-export const render = function (data, $item, markup, trouble) {
+export const render = function (data, $item, markup) {
   let column = 'installed'
   const pub = name => data.publish.find(obj => obj.plugin === name)
+  const trouble = xhr =>
+    $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error')
 
   const format = function (markup, plugin, dependencies) {
     const name = plugin.plugin

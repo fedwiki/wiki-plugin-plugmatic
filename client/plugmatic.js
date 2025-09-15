@@ -58,7 +58,7 @@ const parse = function (text) {
   return result
 }
 
-const emit = function ($item, item) {
+const emit = async function ($item, item) {
   const markup = parse(item.text)
   $item.append(`\
 <p style="background-color:#eee;padding:15px;">
@@ -66,31 +66,24 @@ const emit = function ($item, item) {
 </p>\
 `)
 
-  var trouble = xhr =>
-    $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error')
-
   const renderproxy = data => {
     if (markup.features.includes('browse')) browse(data, $item)
-    else render(data, $item, markup, trouble)
+    else render(data, $item, markup)
   }
 
-  if (markup.plugins.length) {
-    return $.ajax({
-      type: 'POST',
-      url: '/plugin/plugmatic/plugins',
-      data: JSON.stringify(markup),
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      success: renderproxy,
-      error: trouble,
-    })
-  } else {
-    return $.ajax({
-      url: '/plugin/plugmatic/plugins',
-      dataType: 'json',
-      success: renderproxy,
-      error: trouble,
-    })
+  try {
+    if (markup.plugins.length) {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(markup),
+        headers: { 'Content-Type': 'application/json' },
+      }
+      renderproxy(await fetch('/plugin/plugmatic/plugins', options).then(res => res.json()))
+    } else {
+      renderproxy(await fetch('/plugin/plugmatic/plugins').then(res => res.json()))
+    }
+  } catch (err) {
+    $item.find('p').html('server error')
   }
 }
 
