@@ -8,8 +8,8 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-import {render} from './render.js'
-import {browse} from './browse.js'
+import { render } from './render.js'
+import { browse } from './browse.js'
 
 const parse = function (text) {
   const result = { columns: [], plugins: [], features: [] }
@@ -70,10 +70,8 @@ const emit = function ($item, item) {
     $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error')
 
   const renderproxy = data => {
-    if(markup.features.includes('browse'))
-      browse(data,$item)
-    else
-      render(data,$item,markup,trouble)
+    if (markup.features.includes('browse')) browse(data, $item)
+    else render(data, $item, markup, trouble)
   }
 
   if (markup.plugins.length) {
