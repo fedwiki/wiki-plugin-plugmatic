@@ -64,8 +64,8 @@ export function browse (data,$item) {
       const slug = target.dataset?.slug ?
         target.dataset.slug :
         `about-${type}-plugin`
-      // frame.link(slug,event.shiftKey)
-      console.log({slug,shift:event.shiftKey})
+      const $page = event.shiftKey ? null : $(target.closest('.page'))
+      wiki.doInternalLink(slug, $page)
     })
   }
 }
