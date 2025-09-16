@@ -55,9 +55,6 @@ var dialog
 export const render = function (data, $item, markup) {
   let column = 'installed'
   const pub = name => data.publish.find(obj => obj.plugin === name)
-  const trouble = xhr =>
-    $item.find('p').html((xhr.responseJSON != null ? xhr.responseJSON.error : undefined) || 'server error')
-
   const format = function (markup, plugin, dependencies) {
     const name = plugin.plugin
     const months = plugin.birth ? ((Date.now() - plugin.birth) / 1000 / 3600 / 24 / 31.5).toFixed(0) : ''
@@ -142,22 +139,23 @@ export const render = function (data, $item, markup) {
       $row.find('[title=pages]').text((row.pages != null ? row.pages.length : undefined) || '')
       $row.find('[title=service]').text('0')
       $row.find('[title=installed]').text((row.package != null ? row.package.version : undefined) || '')
-      return $item.find('button.restart').removeAttr('disabled').show()
+      $item.find('button.restart').removeAttr('disabled').show()
     }
 
-    window.plugins.plugmatic.install = function (version) {
-      $.ajax({
-        type: 'POST',
-        url: '/plugin/plugmatic/install',
-        data: JSON.stringify({ version, plugin: row.plugin }),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: installed,
-        error: trouble,
-      })
-      // http://stackoverflow.com/questions/2933826/how-to-close-jquery-dialog-within-the-dialog
-      $row.find('[title=status]').css('color', 'white')
-      return dialog.close()
+    window.plugins.plugmatic.install = async function (version) {
+      try {
+        const options = {
+          method: 'POST',
+          body: JSON.stringify({ version, plugin: row.plugin }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+        const update = await fetch('/plugin/plugmatic/install', options).then(res => res.json())
+        installed(update)
+        $row.find('[title=status]').css('color', 'white')
+        dialog.close()
+      } catch (err) {
+        $item.find('p').html('server error')
+      }
     }
 
     const array = function (obj) {
@@ -285,18 +283,15 @@ export const render = function (data, $item, markup) {
     column = $(e.target).attr('title')
     return showdetail(e)
   })
-  return $item
+  $item
     .find('button.restart')
     .hide()
-    .on('click', function (e) {
+    .on('click', event => {
       $item.find('button.restart').attr('disabled', 'disabled')
-      return $.ajax({
-        type: 'POST',
-        url: '/plugin/plugmatic/restart',
-        success() {},
-        // poll for restart complete, then ...
-        // $item.find('button.restart').hide()
-        error: trouble,
-      })
+      try {
+        fetch('/plugin/plugmatic/restart', { method: 'POST' })
+      } catch (err) {
+        $item.find('p').html('server error')
+      }
     })
 }
