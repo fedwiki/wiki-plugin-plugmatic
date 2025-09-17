@@ -129,9 +129,15 @@ if (typeof window !== 'undefined' && window !== null) {
   }
 }
 
-if (typeof window !== 'undefined' && window !== null) {
+// if (typeof window !== 'undefined' && window !== null) {
+//   window.plugins.plugmatic = { emit, bind }
+// }
+// if (typeof module !== 'undefined' && module !== null) {
+//   module.exports = { parse }
+// }
+
+if (typeof window !== 'undefined') {
   window.plugins.plugmatic = { emit, bind }
 }
-if (typeof module !== 'undefined' && module !== null) {
-  module.exports = { parse }
-}
+
+export const plugmatic = typeof window == 'undefined' ? { parse } : undefined

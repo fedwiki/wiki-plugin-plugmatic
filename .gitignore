@@ -1,3 +1,7 @@
+client/plugmatic.js
+client/plugmatic.js.map
+coverage
+meta-client.json
 node_modules
 npm-debug.log
 status
