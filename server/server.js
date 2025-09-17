@@ -103,17 +103,18 @@ const startServer = function (params) {
   }
 
   const plugmap = done =>
-    glob('wiki-plugin-*', { cwd: argv.packageDir }, function (err, files) {
-      if (err) {
-        return done(err, null)
-      }
-      return asyncLib.map(files || [], info, function (err, install) {
-        if (err) {
-          return done(err, null)
-        }
-        return done(null, install)
+    glob('wiki-plugin-*', { cwd: argv.packageDir })
+      .then(files => {
+        return asyncLib.map(files || [], info, function (err, install) {
+          if (err) {
+            return done(err, null)
+          }
+          return done(null, install)
+        })
       })
-    })
+      .catch(err => {
+        return done(err, null)
+      })
 
   const view = function (plugin, done) {
     if (/^\w+$/.test(plugin)) {
@@ -188,17 +189,18 @@ const startServer = function (params) {
   )
 
   app.get(route('plugins'), (req, res) =>
-    glob('wiki-plugin-*', { cwd: argv.packageDir }, function (err, files) {
-      if (err) {
-        return res.e(err)
-      }
-      return asyncLib.map(files || [], info, function (err, install) {
-        if (err) {
-          return res.e(err)
-        }
-        return res.json({ install, bundle })
+    glob('wiki-plugin-*', { cwd: argv.packageDir })
+      .then(files => {
+        return asyncLib.map(files || [], info, function (err, install) {
+          if (err) {
+            return res.e(err)
+          }
+          return res.json({ install, bundle })
+        })
       })
-    }),
+      .catch(err => {
+        return res.e(err)
+      }),
   )
 
   app.post(route('plugins'), function (req, res) {
