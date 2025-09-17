@@ -51,8 +51,8 @@
   },
   "type": "module",
   "dependencies": {
-    "async": "^2.1.4",
-    "glob": "^7.1.4",
-    "jsonfile": "^2.4.0"
+    "async": "^3.2.6",
+    "glob": "^11.0.3",
+    "jsonfile": "^6.2.0"
   }
 }

@@ -7,12 +7,12 @@
 // plugmatic plugin, server-side component
 // These handlers are launched with the wiki server.
 
-const fs = require('fs')
-const glob = require('glob')
-const asyncLib = require('async')
-const jsonfile = require('jsonfile')
-const https = require('https')
-const { execFile } = require('child_process')
+import * as fs from 'node:fs'
+import { glob } from 'glob'
+import * as asyncLib from 'async'
+import jsonfile from 'jsonfile'
+import https from 'node:https'
+import { execFile } from 'node:child_process'
 
 const github = function (path, done) {
   const options = {
@@ -263,4 +263,4 @@ const startServer = function (params) {
   })
 }
 
-module.exports = { startServer }
+export { startServer }
