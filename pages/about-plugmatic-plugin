@@ -7,6 +7,11 @@
       "text": "This plugin queries the origin server for information about installed plugins. Server administrators can install new or updated existing plugins from included inventories."
     },
     {
+      "type": "paragraph",
+      "id": "725d380d0f4119c6",
+      "text": "See [[Browse All Plugins]] also in the hamburger (☰) menu."
+    },
+    {
       "type": "plugmatic",
       "id": "aa516c1dac55e70b",
       "text": "NAME\nPAGES\nBUNDLED\nINSTALLED\nSERVICE"
@@ -73,13 +78,13 @@
     },
     {
       "type": "paragraph",
-      "id": "05248b5013cd7a8c",
-      "text": "Click on any of these columns to bring up a dialog of related information. Press shift and hover over any row to refresh the dialog with information for a different plugin."
+      "id": "698979e7fd5fce6e",
+      "text": "If no columns are requested a default list will be provided. Both STATUS and PUBLISHED require slow queries of npm so these are avoided except when specific plugins are inventoried."
     },
     {
       "type": "paragraph",
-      "id": "698979e7fd5fce6e",
-      "text": "If no columns are requested a default list will be provided. Both STATUS and PUBLISHED require slow queries of npm so these are avoided except when specific plugins are inventoried."
+      "id": "332c5da9a77f5fb4",
+      "text": "Say BROWSE to show the about page browsing menu."
     }
   ],
   "journal": [
@@ -432,6 +437,54 @@
       },
       "after": "856d733cdab8fd8e",
       "date": 1489361231850
+    },
+    {
+      "type": "add",
+      "id": "725d380d0f4119c6",
+      "item": {
+        "type": "paragraph",
+        "id": "725d380d0f4119c6",
+        "text": "See [[Browse All Plugins]] also in the hamburger (☰) menu."
+      },
+      "after": "2f538303a2750c3b",
+      "date": 1757985654595
+    },
+    {
+      "type": "edit",
+      "id": "725d380d0f4119c6",
+      "item": {
+        "type": "paragraph",
+        "id": "725d380d0f4119c6",
+        "text": "See [[Browse All Plugins]] also in the hamburger (☰) menu."
+      },
+      "date": 1757985692110
+    },
+    {
+      "type": "edit",
+      "id": "725d380d0f4119c6",
+      "item": {
+        "type": "paragraph",
+        "id": "725d380d0f4119c6",
+        "text": "See [[Browse All Plugins]] also in the hamburger (☰) menu."
+      },
+      "date": 1757985708220
+    },
+    {
+      "type": "remove",
+      "id": "05248b5013cd7a8c",
+      "date": 1757985783896
+    },
+    {
+      "type": "add",
+      "id": "332c5da9a77f5fb4",
+      "item": {
+        "type": "paragraph",
+        "id": "332c5da9a77f5fb4",
+        "text": "Say BROWSE to show the about page browsing menu."
+      },
+      "after": "698979e7fd5fce6e",
+      "date": 1757985875186
     }
-  ]
+  ],
+  "plugin": "plugmatic"
 }

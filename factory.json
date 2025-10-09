@@ -1,5 +1,6 @@
 {
   "name": "Plugmatic",
   "title": "Plugmatic Plugin",
-  "category": "other"
+  "category": "other",
+  "pages": ["Browse All Plugins"]
 }

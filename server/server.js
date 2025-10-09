@@ -7,12 +7,12 @@
 // plugmatic plugin, server-side component
 // These handlers are launched with the wiki server.
 
-const fs = require('fs')
-const glob = require('glob')
-const asyncLib = require('async')
-const jsonfile = require('jsonfile')
-const https = require('https')
-const { execFile } = require('child_process')
+import * as fs from 'node:fs'
+import { glob } from 'glob'
+import * as asyncLib from 'async'
+import jsonfile from 'jsonfile'
+import https from 'node:https'
+import { execFile } from 'node:child_process'
 
 const github = function (path, done) {
   const options = {
@@ -103,17 +103,18 @@ const startServer = function (params) {
   }
 
   const plugmap = done =>
-    glob('wiki-plugin-*', { cwd: argv.packageDir }, function (err, files) {
-      if (err) {
-        return done(err, null)
-      }
-      return asyncLib.map(files || [], info, function (err, install) {
-        if (err) {
-          return done(err, null)
-        }
-        return done(null, install)
+    glob('wiki-plugin-*', { cwd: argv.packageDir })
+      .then(files => {
+        return asyncLib.map(files || [], info, function (err, install) {
+          if (err) {
+            return done(err, null)
+          }
+          return done(null, install)
+        })
       })
-    })
+      .catch(err => {
+        return done(err, null)
+      })
 
   const view = function (plugin, done) {
     if (/^\w+$/.test(plugin)) {
@@ -188,17 +189,18 @@ const startServer = function (params) {
   )
 
   app.get(route('plugins'), (req, res) =>
-    glob('wiki-plugin-*', { cwd: argv.packageDir }, function (err, files) {
-      if (err) {
-        return res.e(err)
-      }
-      return asyncLib.map(files || [], info, function (err, install) {
-        if (err) {
-          return res.e(err)
-        }
-        return res.json({ install, bundle })
+    glob('wiki-plugin-*', { cwd: argv.packageDir })
+      .then(files => {
+        return asyncLib.map(files || [], info, function (err, install) {
+          if (err) {
+            return res.e(err)
+          }
+          return res.json({ install, bundle })
+        })
       })
-    }),
+      .catch(err => {
+        return res.e(err)
+      }),
   )
 
   app.post(route('plugins'), function (req, res) {
@@ -263,4 +265,4 @@ const startServer = function (params) {
   })
 }
 
-module.exports = { startServer }
+export { startServer }

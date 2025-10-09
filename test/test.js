@@ -6,8 +6,8 @@
 // build time tests for plugmatic plugin
 // see http://mochajs.org/
 
-const plugmatic = require('../client/plugmatic')
-const expect = require('expect.js')
+import { plugmatic } from '../src/client/plugmatic.js'
+import expect from 'expect.js'
 
 describe('plugmatic plugin', function () {
   // we default to less columns when there is lots to do

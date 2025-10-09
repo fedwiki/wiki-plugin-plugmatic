@@ -1,0 +1,60 @@
+{
+  "title": "Browse All Plugins",
+  "story": [
+    {
+      "type": "paragraph",
+      "id": "66904721316f5a0f",
+      "text": "We enlarge on the information offered by the Factory plugin, the item that becomes the kind of item one desires."
+    },
+    {
+      "type": "plugmatic",
+      "id": "4f707c7b35500df5",
+      "text": "BROWSE"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Browse All Plugins",
+        "story": []
+      },
+      "date": 1757699966887
+    },
+    {
+      "item": {
+        "type": "paragraph",
+        "id": "66904721316f5a0f",
+        "text": "We enlarge on the information offered by the Factory plugin, the item that becomes the kind of item one desires."
+      },
+      "id": "66904721316f5a0f",
+      "type": "add",
+      "date": 1757700037250
+    },
+    {
+      "type": "fork",
+      "date": 1757890109877
+    },
+    {
+      "item": {
+        "type": "plugmatic",
+        "id": "4f707c7b35500df5",
+        "text": "BROWSE"
+      },
+      "id": "4f707c7b35500df5",
+      "type": "add",
+      "after": "66904721316f5a0f",
+      "date": 1757890112075
+    },
+    {
+      "type": "edit",
+      "id": "4f707c7b35500df5",
+      "item": {
+        "type": "plugmatic",
+        "id": "4f707c7b35500df5",
+        "text": "BROWSE"
+      },
+      "date": 1757890123194
+    }
+  ]
+}

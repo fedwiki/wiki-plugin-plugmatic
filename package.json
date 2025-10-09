@@ -1,6 +1,6 @@
 {
   "name": "wiki-plugin-plugmatic",
-  "version": "1.4.0",
+  "version": "1.5.0-0",
   "description": "Federated Wiki - Plugmatic Plugin",
   "keywords": [
     "plugmatic",
@@ -20,7 +20,9 @@
     "Nick Niemeir <nick.niemeir@gmail.com>"
   ],
   "scripts": {
-    "build": "eslint; mocha",
+    "build": "npm run clean; eslint; mocha; node scripts/build-client.js",
+    "clean": "rm client/plugmatic.js client/plugmatic.js.map",
+    "lint": "eslint",
     "test": "mocha",
     "prettier:format": "prettier --write './**/*.js'",
     "prettier:check": "prettier --check ./**/*.js",
@@ -28,11 +30,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "esbuild": "^0.25.9",
     "eslint": "^9.21.0",
     "expect.js": "^0.3.1",
     "globals": "^16.0.0",
     "grunt-git-authors": "^3.2.0",
-    "mocha": "^10.2.0",
+    "mocha": "^11.7.2",
     "prettier": "^3.5.2"
   },
   "license": "MIT",
@@ -46,9 +49,10 @@
   "engines": {
     "node": ">=0.10"
   },
+  "type": "module",
   "dependencies": {
-    "async": "^2.1.4",
-    "glob": "^7.1.4",
-    "jsonfile": "^2.4.0"
+    "async": "^3.2.6",
+    "glob": "^11.0.3",
+    "jsonfile": "^6.2.0"
   }
 }
