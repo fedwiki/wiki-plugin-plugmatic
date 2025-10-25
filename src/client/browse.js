@@ -26,6 +26,7 @@ export function browse(data, $item) {
         if (system.includes(plugin.plugin)) return category == 'system'
         return category == (have || 'option')
       })
+      .toSorted((a,b) => a.plugin.localeCompare(b.plugin))
       .map(format)
       .join('\n')}`,
   )
