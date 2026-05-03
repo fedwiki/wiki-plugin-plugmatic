@@ -7,6 +7,7 @@
 // see http://mochajs.org/
 
 import { plugmatic } from '../src/client/plugmatic.js'
+import { describe, it } from 'node:test'
 import expect from 'expect.js'
 
 describe('plugmatic plugin', function () {
